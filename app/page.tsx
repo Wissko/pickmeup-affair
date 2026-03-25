@@ -1,26 +1,33 @@
 import Nav from '@/components/Nav';
 import Hero from '@/components/Hero';
-import Experience from '@/components/Experience';
-import Offres from '@/components/Offres';
-import Galerie from '@/components/Galerie';
+import About from '@/components/About';
+import Experiences from '@/components/Experiences';
+import Gallery from '@/components/Gallery';
 import Occasions from '@/components/Occasions';
-import Ateliers from '@/components/Ateliers';
+import Workshops from '@/components/Workshops';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
 
-export default function HomePage() {
+export default function Home() {
   return (
     <>
+      {/* Fixed parallax hero background */}
+      <div className="hero-bg" aria-hidden="true" />
+
+      {/* Nav sits above everything */}
       <Nav />
-      <main id="main-content">
+
+      {/* Main page content */}
+      <main className="page-content">
         <Hero />
-        <Experience />
-        <Offres />
-        <Galerie />
+        <About />
+        <Experiences />
+        <Gallery />
         <Occasions />
-        <Ateliers />
+        <Workshops />
         <Contact />
       </main>
+
       <Footer />
     </>
   );

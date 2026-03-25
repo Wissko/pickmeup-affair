@@ -1,269 +1,184 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState } from 'react';
 import FadeUp from './FadeUp';
 
-const FORMSPREE_ID = 'xpwzjwkq'; // Replace with your Formspree form ID
-
-const occasions = [
-  'Mariage',
-  'Anniversaire',
-  'Événement corporate',
-  'Cadeau personnalisé',
-  'Collaboration',
-  'Atelier',
-  'Autre',
-];
-
-type FormStatus = 'idle' | 'submitting' | 'success' | 'error';
-
 export default function Contact() {
-  const [status, setStatus] = useState<FormStatus>('idle');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    occasion: '',
+    message: '',
+  });
+  const [submitted, setSubmitted] = useState(false);
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus('submitting');
-    const form = e.currentTarget;
-    const data = new FormData(form);
-
-    try {
-      const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
-        method: 'POST',
-        body: data,
-        headers: { Accept: 'application/json' },
-      });
-
-      if (res.ok) {
-        setStatus('success');
-        form.reset();
-      } else {
-        setStatus('error');
-      }
-    } catch {
-      setStatus('error');
-    }
-  }
+    // Form submission would be wired to a backend or service like Formspree
+    setSubmitted(true);
+  };
 
   return (
     <section
       id="contact"
-      className="section-padding bg-bg"
-      aria-label="Contact"
+      className="section-transparent py-24 md:py-32"
     >
-      <div className="container-site">
-        <div className="grid grid-cols-1 gap-16 lg:grid-cols-2 lg:gap-24">
-          {/* Left: info */}
-          <div>
-            <FadeUp>
-              <p className="accent-script mb-3 text-2xl text-caramel">
-                Parlons de votre projet
-              </p>
-            </FadeUp>
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <div className="grid md:grid-cols-2 gap-12 lg:gap-20">
+          {/* Info */}
+          <FadeUp>
+            <p
+              className="font-sans text-xs uppercase tracking-widest mb-4"
+              style={{ color: 'var(--caramel)' }}
+            >
+              Get in Touch
+            </p>
+            <h2
+              className="font-serif font-light italic caramel-line"
+              style={{
+                fontSize: 'clamp(2.2rem, 4.5vw, 3.5rem)',
+                color: 'var(--cream)',
+                lineHeight: 1.2,
+                marginBottom: '1rem',
+              }}
+            >
+              Let's create
+              <br />something sweet.
+            </h2>
 
-            <FadeUp delay={0.1}>
-              <h2 className="heading-serif mb-8 text-4xl text-cream sm:text-5xl lg:text-6xl">
-                Nous <em className="italic text-caramel">contacter</em>
-              </h2>
-            </FadeUp>
+            <div className="mt-10 space-y-6">
+              <div>
+                <p
+                  className="font-sans text-xs uppercase tracking-widest mb-2"
+                  style={{ color: 'var(--caramel)' }}
+                >
+                  Find Us
+                </p>
+                <p className="font-sans font-light" style={{ color: 'rgba(245,237,224,0.75)', lineHeight: 1.7 }}>
+                  Sauce Bistro<br />
+                  50 Frasers Road<br />
+                  Ashgrove, Brisbane QLD
+                </p>
+              </div>
 
-            <FadeUp delay={0.15}>
-              <div className="divider-caramel mb-8" aria-hidden="true" />
-            </FadeUp>
-
-            <FadeUp delay={0.2}>
-              <p className="mb-10 text-base leading-relaxed text-text/60">
-                Vous avez un projet, une envie, une occasion à célébrer ?
-                Décrivez-nous votre vision et nous vous répondrons dans les
-                48 heures pour construire ensemble votre expérience tiramisu.
-              </p>
-            </FadeUp>
-
-            <FadeUp delay={0.25}>
-              <div className="space-y-6">
-                {/* Instagram */}
+              <div>
+                <p
+                  className="font-sans text-xs uppercase tracking-widest mb-2"
+                  style={{ color: 'var(--caramel)' }}
+                >
+                  Follow Along
+                </p>
                 <a
                   href="https://www.instagram.com/pickmeup.affair"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-center gap-4 transition-colors duration-200 hover:text-caramel"
-                  aria-label="Instagram @pickmeup.affair (ouvre dans un nouvel onglet)"
+                  className="font-sans font-light inline-flex items-center gap-2"
+                  style={{ color: 'rgba(245,237,224,0.75)', textDecoration: 'none', transition: 'color 0.2s' }}
+                  onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = 'var(--caramel)')}
+                  onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = 'rgba(245,237,224,0.75)')}
                 >
-                  <div className="flex h-10 w-10 items-center justify-center border border-caramel/30 text-caramel transition-all duration-200 group-hover:bg-caramel group-hover:text-bg">
-                    <svg
-                      aria-hidden="true"
-                      className="h-4 w-4"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                    >
-                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.15em] text-text/40">
-                      Instagram
-                    </p>
-                    <p className="text-sm text-cream/80 group-hover:text-caramel">
-                      @pickmeup.affair
-                    </p>
-                  </div>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+                  </svg>
+                  @pickmeup.affair
                 </a>
+              </div>
 
-                {/* LinkedIn */}
+              <div>
+                <p
+                  className="font-sans text-xs uppercase tracking-widest mb-2"
+                  style={{ color: 'var(--caramel)' }}
+                >
+                  Book a Workshop
+                </p>
                 <a
-                  href="https://www.linkedin.com/in/vissutap"
+                  href="https://www.sevenrooms.com/experiences/saucebistro/valentine-s-tiramisu-making-class-at-sauce-bistro-4812461442121728"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-center gap-4 transition-colors duration-200 hover:text-caramel"
-                  aria-label="LinkedIn Pickmeup Affair (ouvre dans un nouvel onglet)"
+                  className="btn-outline-caramel"
+                  style={{ fontSize: '0.75rem' }}
                 >
-                  <div className="flex h-10 w-10 items-center justify-center border border-caramel/30 text-caramel transition-all duration-200 group-hover:bg-caramel group-hover:text-bg">
-                    <svg
-                      aria-hidden="true"
-                      className="h-4 w-4"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                    >
-                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.15em] text-text/40">
-                      LinkedIn
-                    </p>
-                    <p className="text-sm text-cream/80 group-hover:text-caramel">
-                      Pickmeup Affair
-                    </p>
-                  </div>
+                  Reserve on SevenRooms →
                 </a>
               </div>
-            </FadeUp>
-          </div>
+            </div>
+          </FadeUp>
 
-          {/* Right: form */}
+          {/* Form */}
           <FadeUp delay={0.2}>
-            <form
-              onSubmit={handleSubmit}
-              noValidate
-              aria-label="Formulaire de contact"
-              className="space-y-6"
-            >
-              {/* Name + Email row */}
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                <div>
-                  <label
-                    htmlFor="contact-name"
-                    className="mb-2 block text-xs uppercase tracking-[0.15em] text-text/50"
-                  >
-                    Prénom & Nom
-                  </label>
+            {submitted ? (
+              <div
+                className="flex flex-col justify-center items-center h-full text-center py-16"
+              >
+                <div className="text-5xl mb-6">✨</div>
+                <h3
+                  className="font-serif italic text-3xl mb-4"
+                  style={{ color: 'var(--cream)' }}
+                >
+                  Thank you!
+                </h3>
+                <p className="font-sans font-light" style={{ color: 'rgba(245,237,224,0.7)' }}>
+                  We'll be in touch shortly.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
                   <input
-                    id="contact-name"
-                    name="name"
                     type="text"
+                    name="name"
+                    placeholder="Your Name"
+                    value={formData.name}
+                    onChange={handleChange}
                     required
-                    autoComplete="name"
-                    className="w-full border border-caramel/20 bg-surface px-4 py-3 text-sm text-cream placeholder-text/30 transition-colors duration-200 focus:border-caramel/60 focus:outline-none focus:ring-0"
-                    placeholder="Votre nom"
+                    className="form-input"
                   />
-                </div>
-                <div>
-                  <label
-                    htmlFor="contact-email"
-                    className="mb-2 block text-xs uppercase tracking-[0.15em] text-text/50"
-                  >
-                    Email
-                  </label>
                   <input
-                    id="contact-email"
-                    name="email"
                     type="email"
+                    name="email"
+                    placeholder="Email Address"
+                    value={formData.email}
+                    onChange={handleChange}
                     required
-                    autoComplete="email"
-                    className="w-full border border-caramel/20 bg-surface px-4 py-3 text-sm text-cream placeholder-text/30 transition-colors duration-200 focus:border-caramel/60 focus:outline-none focus:ring-0"
-                    placeholder="votre@email.com"
+                    className="form-input"
                   />
                 </div>
-              </div>
-
-              {/* Occasion */}
-              <div>
-                <label
-                  htmlFor="contact-occasion"
-                  className="mb-2 block text-xs uppercase tracking-[0.15em] text-text/50"
-                >
-                  Occasion
-                </label>
                 <select
-                  id="contact-occasion"
                   name="occasion"
-                  required
-                  className="w-full border border-caramel/20 bg-surface px-4 py-3 text-sm text-cream transition-colors duration-200 focus:border-caramel/60 focus:outline-none focus:ring-0"
+                  value={formData.occasion}
+                  onChange={handleChange}
+                  className="form-input"
+                  style={{ cursor: 'pointer' }}
                 >
-                  <option value="" disabled>
-                    Sélectionnez une occasion
-                  </option>
-                  {occasions.map((o) => (
-                    <option key={o} value={o}>
-                      {o}
-                    </option>
-                  ))}
+                  <option value="">Select Occasion</option>
+                  <option value="wedding">Wedding</option>
+                  <option value="birthday">Birthday</option>
+                  <option value="corporate">Corporate Event</option>
+                  <option value="valentines">Valentine's Day</option>
+                  <option value="workshop">Workshop Enquiry</option>
+                  <option value="custom">Custom Order</option>
+                  <option value="other">Other</option>
                 </select>
-              </div>
-
-              {/* Message */}
-              <div>
-                <label
-                  htmlFor="contact-message"
-                  className="mb-2 block text-xs uppercase tracking-[0.15em] text-text/50"
-                >
-                  Message
-                </label>
                 <textarea
-                  id="contact-message"
                   name="message"
+                  placeholder="Tell us about your occasion or enquiry..."
+                  value={formData.message}
+                  onChange={handleChange}
                   required
                   rows={5}
-                  className="w-full resize-none border border-caramel/20 bg-surface px-4 py-3 text-sm text-cream placeholder-text/30 transition-colors duration-200 focus:border-caramel/60 focus:outline-none focus:ring-0"
-                  placeholder="Décrivez votre projet, la date, le nombre de personnes…"
+                  className="form-input resize-none"
                 />
-              </div>
-
-              {/* Submit */}
-              <div>
-                <button
-                  type="submit"
-                  disabled={status === 'submitting' || status === 'success'}
-                  className="btn-primary w-full justify-center disabled:cursor-not-allowed disabled:opacity-50"
-                  aria-live="polite"
-                  aria-busy={status === 'submitting'}
-                >
-                  {status === 'submitting'
-                    ? 'Envoi en cours…'
-                    : status === 'success'
-                    ? '✓ Message envoyé'
-                    : 'Envoyer le message'}
+                <button type="submit" className="btn-primary w-full text-center">
+                  Send Enquiry
                 </button>
-
-                {status === 'error' && (
-                  <p
-                    role="alert"
-                    className="mt-3 text-center text-xs text-red-400"
-                  >
-                    Une erreur est survenue. Veuillez réessayer ou nous contacter
-                    directement via Instagram.
-                  </p>
-                )}
-
-                {status === 'success' && (
-                  <p
-                    role="status"
-                    className="mt-3 text-center text-xs text-caramel"
-                  >
-                    Merci ! Nous vous répondrons sous 48h.
-                  </p>
-                )}
-              </div>
-            </form>
+              </form>
+            )}
           </FadeUp>
         </div>
       </div>

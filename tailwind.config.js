@@ -4,37 +4,20 @@ module.exports = {
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
   ],
-  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        bg: '#0d0b09',
-        surface: '#1a1410',
-        cream: '#f5ede0',
-        caramel: '#c9925a',
-        chocolate: '#6b3a2a',
-        accent: '#e8c4a0',
-        text: '#f0e8dc',
+        'deep-black': '#0d0b09',
+        'caramel': '#c9925a',
+        'caramel-light': '#d9a878',
+        'cream': '#f5ede0',
+        'cream-dark': '#e8d9c8',
+        'overlay-dark': 'rgba(13,11,9,0.82)',
+        'overlay-mid': 'rgba(13,11,9,0.65)',
       },
       fontFamily: {
-        cormorant: ['var(--font-cormorant)', 'Georgia', 'serif'],
-        dm: ['var(--font-dm-sans)', 'system-ui', 'sans-serif'],
-        vibes: ['var(--font-great-vibes)', 'cursive'],
-      },
-      screens: {
-        xs: '480px',
-      },
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-      },
-      keyframes: {
-        shimmer: {
-          '0%': { backgroundPosition: '-200% center' },
-          '100%': { backgroundPosition: '200% center' },
-        },
-      },
-      animation: {
-        shimmer: 'shimmer 3s linear infinite',
+        serif: ['var(--font-cormorant)', 'Georgia', 'serif'],
+        sans: ['var(--font-dm-sans)', 'system-ui', 'sans-serif'],
       },
     },
   },

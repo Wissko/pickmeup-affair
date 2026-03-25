@@ -7,26 +7,18 @@ interface FadeUpProps {
   children: ReactNode;
   delay?: number;
   className?: string;
-  as?: 'div' | 'section' | 'article' | 'li' | 'p' | 'span' | 'h2' | 'h3';
 }
 
-export default function FadeUp({
-  children,
-  delay = 0,
-  className = '',
-  as: Tag = 'div',
-}: FadeUpProps) {
-  const MotionTag = motion[Tag] as typeof motion.div;
-
+export default function FadeUp({ children, delay = 0, className = '' }: FadeUpProps) {
   return (
-    <MotionTag
-      initial={{ opacity: 0, y: 30 }}
+    <motion.div
+      initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 0.7, delay, ease: [0.25, 0.1, 0.25, 1] }}
+      viewport={{ once: true, amount: 0.1 }}
+      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
       className={className}
     >
       {children}
-    </MotionTag>
+    </motion.div>
   );
 }
