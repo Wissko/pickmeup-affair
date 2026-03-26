@@ -18,7 +18,7 @@ const slides = [
 
 type Position = 'far' | 'near' | 'center' | 'nearR' | 'farR' | 'hidden'
 
-const cardVariants: Record<Position, object> = {
+const cardVariants: Record<Position, import("framer-motion").TargetAndTransition> = {
   far: {
     scale: 0.65,
     x: '-85%',
@@ -69,7 +69,7 @@ const cardVariants: Record<Position, object> = {
   },
 }
 
-const cardVariantsMobile: Record<Position, object> = {
+const cardVariantsMobile: Record<Position, import("framer-motion").TargetAndTransition> = {
   far: {
     scale: 0.60,
     x: '-80%',
