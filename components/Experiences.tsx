@@ -4,14 +4,14 @@ const cards = [
   {
     num: '01',
     title: 'Pop-ups & Events',
-    desc: 'We bring the tiramisu bar to your event — an experience your guests will remember.',
+    desc: 'We bring the tiramisu bar to your event. A presence your guests will carry home.',
     cta: 'Enquire',
     href: '#contact',
   },
   {
     num: '02',
     title: 'Custom Creations',
-    desc: 'Bespoke tiramisu designed around your story — personalised, hand-finished, elegant.',
+    desc: 'Bespoke tiramisu designed around your story. Personalised, hand-finished, quietly elegant.',
     cta: 'Order Custom',
     href: '#contact',
   },

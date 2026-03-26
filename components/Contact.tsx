@@ -48,11 +48,24 @@ export default function Contact() {
 
             <div className="mt-14 space-y-10">
               <div>
-                <p className="overline mb-3">Find Us</p>
-                <p className="font-sans font-light" style={{ color: 'rgba(245,237,224,0.55)', lineHeight: 1.8, fontSize: '0.95rem' }}>
-                  Sauce Bistro<br />
-                  50 Frasers Road · Ashgrove, Brisbane QLD
-                </p>
+                <p className="overline mb-5">Brisbane City's Markets</p>
+                <div
+                  className="font-sans font-light"
+                  style={{ color: 'rgba(245,237,224,0.55)', lineHeight: 1, fontSize: '0.9rem' }}
+                >
+                  <div style={{ display: 'flex', gap: '1.5rem', paddingBottom: '14px', borderBottom: '1px solid rgba(245,237,224,0.06)' }}>
+                    <span style={{ color: 'var(--caramel)', letterSpacing: '0.1em', fontSize: '0.72rem', textTransform: 'uppercase', minWidth: '3rem' }}>Wed</span>
+                    <span>8am–6pm &nbsp;·&nbsp; Reddacliff Place</span>
+                  </div>
+                  <div style={{ display: 'flex', gap: '1.5rem', paddingTop: '14px', paddingBottom: '14px', borderBottom: '1px solid rgba(245,237,224,0.06)' }}>
+                    <span style={{ color: 'var(--caramel)', letterSpacing: '0.1em', fontSize: '0.72rem', textTransform: 'uppercase', minWidth: '3rem' }}>Thu</span>
+                    <span>8am–2pm &nbsp;·&nbsp; Cathedral Square</span>
+                  </div>
+                  <div style={{ display: 'flex', gap: '1.5rem', paddingTop: '14px' }}>
+                    <span style={{ color: 'var(--caramel)', letterSpacing: '0.1em', fontSize: '0.72rem', textTransform: 'uppercase', minWidth: '3rem' }}>Thu</span>
+                    <span>8am–2pm &nbsp;·&nbsp; Queen's Wharf</span>
+                  </div>
+                </div>
               </div>
 
               <div>

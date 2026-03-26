@@ -91,7 +91,7 @@ export default function Footer() {
             className="font-sans text-xs"
             style={{ color: 'rgba(245,237,224,0.2)', letterSpacing: '0.06em' }}
           >
-            © 2025 Pick Me Up. All rights reserved. · Sauce Bistro, 50 Frasers Road, Ashgrove, Brisbane
+            © 2025 Pick Me Up. All rights reserved. · Brisbane City's Markets
           </p>
         </div>
       </div>
