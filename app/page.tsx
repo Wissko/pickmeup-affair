@@ -1,5 +1,6 @@
 import Nav from '@/components/Nav';
 import Hero from '@/components/Hero';
+import RibbonBow from '@/components/RibbonBow';
 import About from '@/components/About';
 import Experiences from '@/components/Experiences';
 import Gallery from '@/components/Gallery';
@@ -20,6 +21,8 @@ export default function Home() {
       {/* Main page content */}
       <main className="page-content">
         <Hero />
+        {/* Scroll-driven ribbon bow — jonction Hero / About */}
+        <RibbonBow />
         <About />
         <Experiences />
         <Gallery />
