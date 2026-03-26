@@ -1,36 +1,127 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 
-export default function RibbonBow() {
-  const containerRef = useRef<HTMLDivElement>(null)
+interface RibbonBowProps {
+  /** Optional external ref — lets parent share the same scroll target */
+  ribbonRef?: React.RefObject<HTMLDivElement | null>
+}
 
+export default function RibbonBow({ ribbonRef }: RibbonBowProps) {
+  const internalRef = useRef<HTMLDivElement>(null)
+  const containerRef = (ribbonRef ?? internalRef) as React.RefObject<HTMLDivElement>
+
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
+
+  // ─── Scroll tracking ────────────────────────────────────────────────────────
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ['start end', 'end start'],
+    offset: ['start 85%', 'end 15%'],
   })
 
-  // ── Phase 2 : 30 % → 65 % — ouverture progressive ──────────────────────────
+  // ─── Boucles ────────────────────────────────────────────────────────────────
+  const loopScaleY  = useTransform(scrollYProgress, [0, 0.5],  [1, 0.05])
+  const loopScaleX  = useTransform(scrollYProgress, [0, 0.5],  [1, 1.3])
+  const loopLeftX   = useTransform(scrollYProgress, [0.1, 0.6], [0, -60])
+  const loopRightX  = useTransform(scrollYProgress, [0.1, 0.6], [0, 60])
+  const loopOpacity = useTransform(scrollYProgress, [0.5, 0.8], [1, 0])
 
-  // Boucles : aplatissement + léger écart horizontal
-  const loopScaleY    = useTransform(scrollYProgress, [0.2, 0.65], [1, 0.04])
-  const loopLeftX     = useTransform(scrollYProgress, [0.3, 0.65], [0, -40])
-  const loopRightX    = useTransform(scrollYProgress, [0.3, 0.65], [0, 40])
-  const loopOpacity   = useTransform(scrollYProgress, [0.52, 0.76], [1, 0])
+  // ─── Nœud central ───────────────────────────────────────────────────────────
+  const knotScale   = useTransform(scrollYProgress, [0.1, 0.5],  [1, 0])
+  const knotOpacity = useTransform(scrollYProgress, [0.3, 0.6],  [1, 0])
 
-  // Nœud central : se défait et disparaît
-  const knotScale     = useTransform(scrollYProgress, [0.3, 0.63], [1, 0])
-  const knotOpacity   = useTransform(scrollYProgress, [0.48, 0.68], [1, 0])
+  // ─── Queues ──────────────────────────────────────────────────────────────────
+  const tailY       = useTransform(scrollYProgress, [0.1, 0.65], [0, 80])
+  const tailLeftX   = useTransform(scrollYProgress, [0.1, 0.65], [0, -120])
+  const tailRightX  = useTransform(scrollYProgress, [0.1, 0.65], [0, 120])
+  const tailOpacity = useTransform(scrollYProgress, [0.5, 0.85], [1, 0])
 
-  // Queues : tombent et s'écartent
-  const tailLeftX     = useTransform(scrollYProgress, [0.3, 0.72], [0, -100])
-  const tailRightX    = useTransform(scrollYProgress, [0.3, 0.72], [0, 100])
-  const tailY         = useTransform(scrollYProgress, [0.3, 0.72], [0, 55])
-  const tailOpacity   = useTransform(scrollYProgress, [0.55, 0.82], [1, 0])
+  // ─── Bandes horizontales ────────────────────────────────────────────────────
+  const ribbonOpacity = useTransform(scrollYProgress, [0.6, 0.9], [1, 0])
 
-  // Rubans plats : restent plus longtemps
-  const ribbonOpacity = useTransform(scrollYProgress, [0.62, 0.88], [1, 0])
+  // ─── SVG paths — desktop (viewBox 1200×300) ──────────────────────────────
+  // Centre : (600, 150) | nœud ~80px large × 56px haut
+  const D = {
+    bandLeft:  'M0,136 C200,134 400,140 560,142 L560,158 C400,160 200,166 0,164 Z',
+    bandRight: 'M640,142 C800,140 1000,134 1200,136 L1200,164 C1000,166 800,160 640,158 Z',
+
+    // Boucle gauche — pétale orienté droite, attachement côté nœud
+    loopLeftOuter:
+      'M548,141 C520,58 395,8 258,50 C120,93 105,180 185,218 C268,258 450,235 546,162 Z',
+    loopLeftInner:
+      'M540,147 C510,82 400,38 278,68 C155,98 142,170 200,200 C258,232 420,218 536,160 Z',
+    loopLeftHL:
+      'M535,143 C508,72 396,22 270,62 C155,100 144,165 198,196',
+
+    // Boucle droite — miroir
+    loopRightOuter:
+      'M652,141 C680,58 805,8 942,50 C1080,93 1095,180 1015,218 C932,258 750,235 654,162 Z',
+    loopRightInner:
+      'M660,147 C690,82 800,38 922,68 C1045,98 1058,170 1000,200 C942,232 780,218 664,160 Z',
+    loopRightHL:
+      'M665,143 C692,72 804,22 930,62 C1045,100 1056,165 1002,196',
+
+    // Nœud — papillon (deux triangles qui se font face)
+    knotLeft:  'M600,148 L560,130 L560,170 Z',
+    knotRight: 'M600,148 L640,130 L640,170 Z',
+    knotHL:    'M600,144 L572,132 L580,142 Z',
+    knotShadow:'M582,164 L618,164 L632,172 L568,172 Z',
+
+    // Queue gauche — courbe S, s'effile vers le bas
+    tailLeft:
+      'M568,160 C555,178 535,202 510,224 C490,242 472,258 464,274 L456,278 C464,261 482,244 504,226 C530,204 552,180 562,162 Z',
+    tailLeftHL: 'M565,162 C552,180 533,202 508,224 C488,242 470,258 462,274',
+
+    // Queue droite — miroir
+    tailRight:
+      'M632,160 C645,178 665,202 690,224 C710,242 728,258 736,274 L744,278 C736,261 718,244 696,226 C670,204 648,180 638,162 Z',
+    tailRightHL: 'M635,162 C648,180 667,202 692,224 C712,242 730,258 738,274',
+
+    // Highlight fin sur les bandes horizontales
+    bandLeftHL:  'M0,137 C200,135 400,141 558,143',
+    bandRightHL: 'M642,143 C800,141 1000,135 1200,137',
+  }
+
+  // ─── SVG paths — mobile (viewBox 600×200) ───────────────────────────────
+  // Centre : (300, 100)
+  const M = {
+    bandLeft:  'M0,88 C100,86 200,90 280,92 L280,108 C200,110 100,114 0,112 Z',
+    bandRight: 'M320,92 C400,90 500,86 600,88 L600,112 C500,114 400,110 320,108 Z',
+
+    loopLeftOuter:
+      'M275,91 C260,32 198,4 132,26 C62,50 55,96 94,116 C132,136 222,122 272,102 Z',
+    loopLeftInner:
+      'M270,94 C255,42 200,18 140,36 C78,56 72,98 108,113 C145,128 218,116 268,104 Z',
+
+    loopRightOuter:
+      'M325,91 C340,32 402,4 468,26 C538,50 545,96 506,116 C468,136 378,122 328,102 Z',
+    loopRightInner:
+      'M330,94 C345,42 400,18 460,36 C522,56 528,98 492,113 C455,128 382,116 332,104 Z',
+
+    knotLeft:  'M300,98 L281,87 L281,113 Z',
+    knotRight: 'M300,98 L319,87 L319,113 Z',
+
+    tailLeft:
+      'M283,108 C276,118 264,130 250,142 C238,152 228,160 224,167 L218,170 C224,162 234,154 246,143 C260,131 272,118 280,108 Z',
+    tailRight:
+      'M317,108 C324,118 336,130 350,142 C362,152 372,160 376,167 L382,170 C376,162 366,154 354,143 C340,131 328,118 320,108 Z',
+  }
+
+  const paths = isMobile ? M : D
+  const vb  = isMobile ? '0 0 600 200' : '0 0 1200 300'
+  const cx  = isMobile ? 300 : 600
+  const cy  = isMobile ? 100 : 150
+  // Transform origins
+  const loopLOrigin = isMobile ? '275px 100px' : '548px 150px'
+  const loopROrigin = isMobile ? '325px 100px' : '652px 150px'
+  const knotOrigin  = isMobile ? '300px 100px' : '600px 150px'
 
   return (
     <div
@@ -38,296 +129,281 @@ export default function RibbonBow() {
       style={{
         position: 'relative',
         width: '100%',
-        // Transition chromatique entre la section Hero sombre et la section About crème
-        background: 'linear-gradient(to bottom, #0a0806 0%, #1a0d06 30%, #f5ede0 100%)',
+        height: isMobile ? '220px' : '300px',
+        background: 'transparent',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        // Hauteur responsive : 200px desktop, réduite sur mobile via media queries inline
-        height: 'clamp(160px, 20vw, 220px)',
-        overflow: 'visible',
+        overflow: 'hidden',
+        zIndex: 10,
       }}
     >
       <svg
-        viewBox="0 0 1000 200"
+        viewBox={vb}
         preserveAspectRatio="xMidYMid meet"
         style={{
-          width: 'min(90vw, 900px)',
-          height: 'clamp(120px, 16vw, 180px)',
+          width: 'min(95vw, 1200px)',
           overflow: 'visible',
         }}
         aria-hidden="true"
       >
         <defs>
-          {/* ── Gradients satin ───────────────────────────────────────────── */}
-
-          {/* Ruban horizontal : épaisseur variable (satin) */}
-          <linearGradient id="rb-h" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%"   stopColor="#3a000d" />
+          {/* ── Gradient satin principal (bandes + queues) ── */}
+          <linearGradient id="satinGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%"   stopColor="#4a0010" />
             <stop offset="20%"  stopColor="#7a1520" />
-            <stop offset="50%"  stopColor="#c44060" />
-            <stop offset="80%"  stopColor="#7a1520" />
-            <stop offset="100%" stopColor="#3a000d" />
+            <stop offset="45%"  stopColor="#c44060" />
+            <stop offset="60%"  stopColor="#7a1520" />
+            <stop offset="85%"  stopColor="#5a1018" />
+            <stop offset="100%" stopColor="#3a000c" />
           </linearGradient>
 
-          {/* Boucle gauche — reflet en haut-gauche */}
-          <radialGradient id="rb-loop-l" cx="30%" cy="30%" r="70%">
-            <stop offset="0%"   stopColor="#d94570" />
-            <stop offset="35%"  stopColor="#7a1520" />
-            <stop offset="100%" stopColor="#3a000d" />
+          {/* ── Gradient boucle gauche ── */}
+          <radialGradient id="loopGradL" cx="35%" cy="30%" r="65%">
+            <stop offset="0%"   stopColor="#d45070" />
+            <stop offset="40%"  stopColor="#8a1525" />
+            <stop offset="100%" stopColor="#3a000c" />
           </radialGradient>
 
-          {/* Boucle droite — reflet en haut-droite */}
-          <radialGradient id="rb-loop-r" cx="70%" cy="30%" r="70%">
-            <stop offset="0%"   stopColor="#d94570" />
-            <stop offset="35%"  stopColor="#7a1520" />
-            <stop offset="100%" stopColor="#3a000d" />
+          {/* ── Gradient boucle droite ── */}
+          <radialGradient id="loopGradR" cx="65%" cy="30%" r="65%">
+            <stop offset="0%"   stopColor="#d45070" />
+            <stop offset="40%"  stopColor="#8a1525" />
+            <stop offset="100%" stopColor="#3a000c" />
           </radialGradient>
 
-          {/* Nœud central */}
-          <radialGradient id="rb-knot" cx="38%" cy="32%" r="68%">
+          {/* ── Gradient intérieur boucles (face arrière visible) ── */}
+          <radialGradient id="loopInnerGrad" cx="40%" cy="40%" r="60%">
+            <stop offset="0%"   stopColor="#6a1020" stopOpacity="0.7" />
+            <stop offset="100%" stopColor="#2a0008" stopOpacity="0.5" />
+          </radialGradient>
+
+          {/* ── Gradient nœud (papillon) ── */}
+          <radialGradient id="knotGrad" cx="38%" cy="32%" r="68%">
             <stop offset="0%"   stopColor="#e05080" />
             <stop offset="45%"  stopColor="#7a1520" />
             <stop offset="100%" stopColor="#2e0008" />
           </radialGradient>
 
-          {/* Queues — dégradé qui s'efface vers le bas */}
-          <linearGradient id="rb-tail-l" x1="0%" y1="0%" x2="30%" y2="100%">
-            <stop offset="0%"   stopColor="#7a1520" />
-            <stop offset="40%"  stopColor="#a02035" stopOpacity="0.85" />
-            <stop offset="100%" stopColor="#4a0010" stopOpacity="0.2" />
+          {/* ── Gradient queues ── */}
+          <linearGradient id="tailGradL" x1="0%" y1="0%" x2="30%" y2="100%">
+            <stop offset="0%"   stopColor="#8a1525" />
+            <stop offset="50%"  stopColor="#6a1018" stopOpacity="0.85" />
+            <stop offset="100%" stopColor="#3a000c" stopOpacity="0.15" />
           </linearGradient>
-          <linearGradient id="rb-tail-r" x1="100%" y1="0%" x2="70%" y2="100%">
-            <stop offset="0%"   stopColor="#7a1520" />
-            <stop offset="40%"  stopColor="#a02035" stopOpacity="0.85" />
-            <stop offset="100%" stopColor="#4a0010" stopOpacity="0.2" />
+          <linearGradient id="tailGradR" x1="100%" y1="0%" x2="70%" y2="100%">
+            <stop offset="0%"   stopColor="#8a1525" />
+            <stop offset="50%"  stopColor="#6a1018" stopOpacity="0.85" />
+            <stop offset="100%" stopColor="#3a000c" stopOpacity="0.15" />
           </linearGradient>
 
-          {/* Highlight fin sur les boucles */}
-          <linearGradient id="rb-highlight" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%"   stopColor="#e06080" stopOpacity="0.55" />
-            <stop offset="100%" stopColor="#e06080" stopOpacity="0" />
-          </linearGradient>
+          {/* ── Ombre nœud ── */}
+          <radialGradient id="knotShadowGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%"   stopColor="#0a0005" stopOpacity="0.5" />
+            <stop offset="100%" stopColor="#0a0005" stopOpacity="0" />
+          </radialGradient>
+
+          {/* ── Filtre ombre douce (bandes) ── */}
+          <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="4" stdDeviation="8"
+              floodColor="#1a0008" floodOpacity="0.4" />
+          </filter>
+
+          {/* ── Filtre ombre boucles ── */}
+          <filter id="loopShadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feDropShadow dx="2" dy="6" stdDeviation="6"
+              floodColor="#1a0008" floodOpacity="0.3" />
+          </filter>
+
+          {/* ── Filtre ombre nœud ── */}
+          <filter id="knotShadowFilter" x="-30%" y="-30%" width="160%" height="160%">
+            <feDropShadow dx="0" dy="3" stdDeviation="5"
+              floodColor="#0a0005" floodOpacity="0.6" />
+          </filter>
         </defs>
 
-        {/* ══════════════════════════════════════════════════════════════════ */}
-        {/* RUBAN CENTRAL GAUCHE — plat, gradient satin, perspective effilée  */}
-        {/* ══════════════════════════════════════════════════════════════════ */}
+        {/* ════════════════════════════════════════════════════════════════ */}
+        {/*  1 & 2 — BANDES HORIZONTALES                                    */}
+        {/* ════════════════════════════════════════════════════════════════ */}
         <motion.path
-          // Commence large à gauche (16px), s'effile vers le nœud (8px)
-          d="M0,92 C150,90 300,90 468,95 L468,105 C300,110 150,110 0,108 Z"
-          fill="url(#rb-h)"
+          d={paths.bandLeft}
+          fill="url(#satinGrad)"
+          filter="url(#softShadow)"
+          style={{ opacity: ribbonOpacity }}
+        />
+        <motion.path
+          d={paths.bandRight}
+          fill="url(#satinGrad)"
+          filter="url(#softShadow)"
           style={{ opacity: ribbonOpacity }}
         />
 
-        {/* RUBAN CENTRAL DROIT */}
-        <motion.path
-          d="M532,95 C700,90 850,90 1000,92 L1000,108 C850,110 700,110 532,105 Z"
-          fill="url(#rb-h)"
-          style={{ opacity: ribbonOpacity }}
-        />
+        {/* Highlights bandes (desktop only) */}
+        {!isMobile && (
+          <>
+            <motion.path
+              d={D.bandLeftHL}
+              fill="none"
+              stroke="rgba(255,200,200,0.3)"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              style={{ opacity: ribbonOpacity }}
+            />
+            <motion.path
+              d={D.bandRightHL}
+              fill="none"
+              stroke="rgba(255,200,200,0.3)"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              style={{ opacity: ribbonOpacity }}
+            />
+          </>
+        )}
 
-        {/* ══════════════════════════════════════════════════════════════════ */}
-        {/* BOUCLE GAUCHE — pétale plein avec volume (path fermé + gradient)  */}
-        {/* ══════════════════════════════════════════════════════════════════ */}
-        {/*
-          Bord extérieur (plus loin du nœud) : courbe qui part de ~470,96
-          fait une grande courbe vers la gauche, et revient à ~470,104.
-          Bord intérieur : courbe intérieure plus serrée (simulant l'épaisseur du ruban).
-          Le tout forme un "ruban plié en boucle" avec volume.
-        */}
-        <motion.path
-          d={`
-            M470,96
-            C440,50 360,10 280,38
-            C200,66 185,110 240,142
-            C300,175 410,160 462,110
-            C468,104 470,100 470,100
-            C465,98 463,96 462,94
-            C410,42 310,30 255,60
-            C198,92 212,135 270,152
-            C340,168 436,148 468,104
-            Z
-          `}
-          fill="url(#rb-loop-l)"
-          stroke="#3a000d"
-          strokeWidth="0.8"
+        {/* ════════════════════════════════════════════════════════════════ */}
+        {/*  3 — BOUCLE GAUCHE                                              */}
+        {/* ════════════════════════════════════════════════════════════════ */}
+        <motion.g
           style={{
             scaleY: loopScaleY,
+            scaleX: loopScaleX,
             x: loopLeftX,
             opacity: loopOpacity,
-            transformOrigin: '470px 100px',
+            transformOrigin: loopLOrigin,
           }}
-        />
-        {/* Highlight satiné sur boucle gauche */}
-        <motion.path
-          d="M460,90 C435,52 368,22 295,48 C232,72 220,108 252,138"
-          fill="none"
-          stroke="url(#rb-highlight)"
-          strokeWidth="3"
-          strokeLinecap="round"
-          strokeOpacity="0.45"
-          style={{
-            scaleY: loopScaleY,
-            x: loopLeftX,
-            opacity: loopOpacity,
-            transformOrigin: '470px 100px',
-          }}
-        />
+        >
+          {/* Face arrière de la boucle (plus sombre) */}
+          <motion.path
+            d={paths.loopLeftInner}
+            fill="url(#loopInnerGrad)"
+          />
+          {/* Face avant (gradient principal) */}
+          <motion.path
+            d={paths.loopLeftOuter}
+            fill="url(#loopGradL)"
+            filter="url(#loopShadow)"
+            animate={{ scaleY: [1, 1.03, 1] }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+            style={{ transformOrigin: isMobile ? '175px 70px' : '370px 130px' }}
+          />
+          {/* Highlight satiné (desktop only) */}
+          {!isMobile && (
+            <path
+              d={D.loopLeftHL}
+              fill="none"
+              stroke="rgba(255,200,200,0.3)"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          )}
+        </motion.g>
 
-        {/* ══════════════════════════════════════════════════════════════════ */}
-        {/* BOUCLE DROITE — miroir de la gauche                               */}
-        {/* ══════════════════════════════════════════════════════════════════ */}
-        <motion.path
-          d={`
-            M530,96
-            C560,50 640,10 720,38
-            C800,66 815,110 760,142
-            C700,175 590,160 538,110
-            C532,104 530,100 530,100
-            C535,98 537,96 538,94
-            C590,42 690,30 745,60
-            C802,92 788,135 730,152
-            C660,168 564,148 532,104
-            Z
-          `}
-          fill="url(#rb-loop-r)"
-          stroke="#3a000d"
-          strokeWidth="0.8"
+        {/* ════════════════════════════════════════════════════════════════ */}
+        {/*  4 — BOUCLE DROITE                                              */}
+        {/* ════════════════════════════════════════════════════════════════ */}
+        <motion.g
           style={{
             scaleY: loopScaleY,
+            scaleX: loopScaleX,
             x: loopRightX,
             opacity: loopOpacity,
-            transformOrigin: '530px 100px',
+            transformOrigin: loopROrigin,
           }}
-        />
-        {/* Highlight satiné sur boucle droite */}
-        <motion.path
-          d="M540,90 C565,52 632,22 705,48 C768,72 780,108 748,138"
-          fill="none"
-          stroke="url(#rb-highlight)"
-          strokeWidth="3"
-          strokeLinecap="round"
-          strokeOpacity="0.45"
-          style={{
-            scaleY: loopScaleY,
-            x: loopRightX,
-            opacity: loopOpacity,
-            transformOrigin: '530px 100px',
-          }}
+        >
+          <motion.path
+            d={paths.loopRightInner}
+            fill="url(#loopInnerGrad)"
+          />
+          <motion.path
+            d={paths.loopRightOuter}
+            fill="url(#loopGradR)"
+            filter="url(#loopShadow)"
+            animate={{ scaleY: [1, 1.03, 1] }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.4 }}
+            style={{ transformOrigin: isMobile ? '425px 70px' : '830px 130px' }}
+          />
+          {!isMobile && (
+            <path
+              d={D.loopRightHL}
+              fill="none"
+              stroke="rgba(255,200,200,0.3)"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          )}
+        </motion.g>
+
+        {/* ════════════════════════════════════════════════════════════════ */}
+        {/*  5 — OMBRE DU NŒUD                                              */}
+        {/* ════════════════════════════════════════════════════════════════ */}
+        <motion.ellipse
+          cx={cx}
+          cy={cy + (isMobile ? 18 : 22)}
+          rx={isMobile ? 30 : 58}
+          ry={isMobile ? 8 : 14}
+          fill="url(#knotShadowGrad)"
+          style={{ scale: knotScale, opacity: knotOpacity, transformOrigin: knotOrigin }}
         />
 
-        {/* ══════════════════════════════════════════════════════════════════ */}
-        {/* NŒUD CENTRAL — losange avec gradient et reflet                    */}
-        {/* ══════════════════════════════════════════════════════════════════ */}
-        {/* Losange principal */}
+        {/* ════════════════════════════════════════════════════════════════ */}
+        {/*  7 & 8 — QUEUES (dessinées AVANT le nœud pour le z-order)       */}
+        {/* ════════════════════════════════════════════════════════════════ */}
         <motion.path
-          d="M500,74 L528,100 L500,126 L472,100 Z"
-          fill="url(#rb-knot)"
-          stroke="#2e0008"
-          strokeWidth="1.5"
-          style={{
-            scale: knotScale,
-            opacity: knotOpacity,
-            transformOrigin: '500px 100px',
-          }}
-        />
-        {/* Reflet lumineux haut-gauche du nœud */}
-        <motion.path
-          d="M500,78 L518,95 L508,87 Z"
-          fill="#e06080"
-          fillOpacity="0.55"
-          style={{
-            scale: knotScale,
-            opacity: knotOpacity,
-            transformOrigin: '500px 100px',
-          }}
-        />
-        {/* Ombre bas-droite du nœud */}
-        <motion.path
-          d="M500,122 L518,105 L524,112 Z"
-          fill="#2e0008"
-          fillOpacity="0.6"
-          style={{
-            scale: knotScale,
-            opacity: knotOpacity,
-            transformOrigin: '500px 100px',
-          }}
-        />
-
-        {/* ══════════════════════════════════════════════════════════════════ */}
-        {/* QUEUE GAUCHE — path courbe de Bézier, ruban épais effilé          */}
-        {/* ══════════════════════════════════════════════════════════════════ */}
-        <motion.path
-          d={`
-            M476,105
-            C458,120 430,142 395,162
-            C378,171 366,174 360,175
-            C365,178 376,177 394,169
-            C432,150 462,126 480,110
-            Z
-          `}
-          fill="url(#rb-tail-l)"
-          stroke="#3a000d"
+          d={paths.tailLeft}
+          fill="url(#tailGradL)"
+          stroke="#3a000c"
           strokeWidth="0.5"
-          strokeLinejoin="round"
-          style={{
-            x: tailLeftX,
-            y: tailY,
-            opacity: tailOpacity,
-          }}
+          style={{ x: tailLeftX, y: tailY, opacity: tailOpacity }}
         />
-        {/* Highlight queue gauche */}
-        <motion.path
-          d="M477,107 C462,121 440,140 410,157"
-          fill="none"
-          stroke="#c44060"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeOpacity="0.35"
-          style={{
-            x: tailLeftX,
-            y: tailY,
-            opacity: tailOpacity,
-          }}
-        />
+        {!isMobile && (
+          <motion.path
+            d={D.tailLeftHL}
+            fill="none"
+            stroke="rgba(255,200,200,0.3)"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            style={{ x: tailLeftX, y: tailY, opacity: tailOpacity }}
+          />
+        )}
 
-        {/* ══════════════════════════════════════════════════════════════════ */}
-        {/* QUEUE DROITE — miroir                                             */}
-        {/* ══════════════════════════════════════════════════════════════════ */}
         <motion.path
-          d={`
-            M524,105
-            C542,120 570,142 605,162
-            C622,171 634,174 640,175
-            C635,178 624,177 606,169
-            C568,150 538,126 520,110
-            Z
-          `}
-          fill="url(#rb-tail-r)"
-          stroke="#3a000d"
+          d={paths.tailRight}
+          fill="url(#tailGradR)"
+          stroke="#3a000c"
           strokeWidth="0.5"
-          strokeLinejoin="round"
-          style={{
-            x: tailRightX,
-            y: tailY,
-            opacity: tailOpacity,
-          }}
+          style={{ x: tailRightX, y: tailY, opacity: tailOpacity }}
         />
-        {/* Highlight queue droite */}
-        <motion.path
-          d="M523,107 C538,121 560,140 590,157"
-          fill="none"
-          stroke="#c44060"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeOpacity="0.35"
-          style={{
-            x: tailRightX,
-            y: tailY,
-            opacity: tailOpacity,
-          }}
-        />
+        {!isMobile && (
+          <motion.path
+            d={D.tailRightHL}
+            fill="none"
+            stroke="rgba(255,200,200,0.3)"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            style={{ x: tailRightX, y: tailY, opacity: tailOpacity }}
+          />
+        )}
+
+        {/* ════════════════════════════════════════════════════════════════ */}
+        {/*  6 — NŒUD CENTRAL (papillon — par-dessus les queues)            */}
+        {/* ════════════════════════════════════════════════════════════════ */}
+        <motion.g
+          style={{ scale: knotScale, opacity: knotOpacity, transformOrigin: knotOrigin }}
+          filter="url(#knotShadowFilter)"
+        >
+          {/* Aile gauche */}
+          <path d={paths.knotLeft} fill="url(#knotGrad)" stroke="#2e0008" strokeWidth="1" />
+          {/* Aile droite */}
+          <path d={paths.knotRight} fill="url(#knotGrad)" stroke="#2e0008" strokeWidth="1" />
+          {/* Highlight haut-gauche (desktop only) */}
+          {!isMobile && (
+            <>
+              <path d={D.knotHL} fill="#e06080" fillOpacity="0.55" />
+              <path d={D.knotShadow} fill="#1a0008" fillOpacity="0.4" />
+            </>
+          )}
+        </motion.g>
+
       </svg>
     </div>
   )
