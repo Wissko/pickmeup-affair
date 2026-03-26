@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
+import FadeUp from './FadeUp'
 
 const slides = [
   { src: '/images/hero.jpg',   alt: 'The Signature tiramisu',          caption: 'The Signature' },
@@ -19,105 +20,21 @@ const slides = [
 type Position = 'far' | 'near' | 'center' | 'nearR' | 'farR' | 'hidden'
 
 const cardVariants: Record<Position, import("framer-motion").TargetAndTransition> = {
-  far: {
-    scale: 0.65,
-    x: '-85%',
-    rotateY: 35,
-    opacity: 0.4,
-    filter: 'blur(4px) brightness(0.5)',
-    zIndex: 1,
-  },
-  near: {
-    scale: 0.80,
-    x: '-50%',
-    rotateY: 20,
-    opacity: 0.65,
-    filter: 'blur(1.5px) brightness(0.7)',
-    zIndex: 2,
-  },
-  center: {
-    scale: 1.00,
-    x: '0%',
-    rotateY: 0,
-    opacity: 1,
-    filter: 'blur(0px) brightness(1)',
-    zIndex: 5,
-  },
-  nearR: {
-    scale: 0.80,
-    x: '50%',
-    rotateY: -20,
-    opacity: 0.65,
-    filter: 'blur(1.5px) brightness(0.7)',
-    zIndex: 2,
-  },
-  farR: {
-    scale: 0.65,
-    x: '85%',
-    rotateY: -35,
-    opacity: 0.4,
-    filter: 'blur(4px) brightness(0.5)',
-    zIndex: 1,
-  },
-  hidden: {
-    scale: 0.5,
-    x: '0%',
-    rotateY: 0,
-    opacity: 0,
-    filter: 'blur(8px) brightness(0)',
-    zIndex: 0,
-  },
+  far:    { scale: 0.65, x: '-85%', rotateY: 35,  opacity: 0.4,  filter: 'blur(4px) brightness(0.5)', zIndex: 1 },
+  near:   { scale: 0.80, x: '-50%', rotateY: 20,  opacity: 0.65, filter: 'blur(1.5px) brightness(0.7)', zIndex: 2 },
+  center: { scale: 1.00, x: '0%',   rotateY: 0,   opacity: 1,    filter: 'blur(0px) brightness(1)', zIndex: 5 },
+  nearR:  { scale: 0.80, x: '50%',  rotateY: -20, opacity: 0.65, filter: 'blur(1.5px) brightness(0.7)', zIndex: 2 },
+  farR:   { scale: 0.65, x: '85%',  rotateY: -35, opacity: 0.4,  filter: 'blur(4px) brightness(0.5)', zIndex: 1 },
+  hidden: { scale: 0.5,  x: '0%',   rotateY: 0,   opacity: 0,    filter: 'blur(8px) brightness(0)', zIndex: 0 },
 }
 
 const cardVariantsMobile: Record<Position, import("framer-motion").TargetAndTransition> = {
-  far: {
-    scale: 0.60,
-    x: '-80%',
-    rotateY: 20,
-    opacity: 0,
-    filter: 'blur(6px) brightness(0.4)',
-    zIndex: 0,
-  },
-  near: {
-    scale: 0.75,
-    x: '-45%',
-    rotateY: 15,
-    opacity: 0.6,
-    filter: 'blur(2px) brightness(0.65)',
-    zIndex: 2,
-  },
-  center: {
-    scale: 1.00,
-    x: '0%',
-    rotateY: 0,
-    opacity: 1,
-    filter: 'blur(0px) brightness(1)',
-    zIndex: 5,
-  },
-  nearR: {
-    scale: 0.75,
-    x: '45%',
-    rotateY: -15,
-    opacity: 0.6,
-    filter: 'blur(2px) brightness(0.65)',
-    zIndex: 2,
-  },
-  farR: {
-    scale: 0.60,
-    x: '80%',
-    rotateY: 20,
-    opacity: 0,
-    filter: 'blur(6px) brightness(0.4)',
-    zIndex: 0,
-  },
-  hidden: {
-    scale: 0.5,
-    x: '0%',
-    rotateY: 0,
-    opacity: 0,
-    filter: 'blur(8px) brightness(0)',
-    zIndex: 0,
-  },
+  far:    { scale: 0.60, x: '-80%', rotateY: 20,  opacity: 0,    filter: 'blur(6px) brightness(0.4)', zIndex: 0 },
+  near:   { scale: 0.75, x: '-45%', rotateY: 15,  opacity: 0.6,  filter: 'blur(2px) brightness(0.65)', zIndex: 2 },
+  center: { scale: 1.00, x: '0%',   rotateY: 0,   opacity: 1,    filter: 'blur(0px) brightness(1)', zIndex: 5 },
+  nearR:  { scale: 0.75, x: '45%',  rotateY: -15, opacity: 0.6,  filter: 'blur(2px) brightness(0.65)', zIndex: 2 },
+  farR:   { scale: 0.60, x: '80%',  rotateY: 20,  opacity: 0,    filter: 'blur(6px) brightness(0.4)', zIndex: 0 },
+  hidden: { scale: 0.5,  x: '0%',   rotateY: 0,   opacity: 0,    filter: 'blur(8px) brightness(0)', zIndex: 0 },
 }
 
 const transitionConfig = {
@@ -128,7 +45,6 @@ const transitionConfig = {
 function getPosition(index: number, activeIndex: number, total: number): Position {
   const diff = ((index - activeIndex) % total + total) % total
   const normalizedDiff = diff > total / 2 ? diff - total : diff
-
   if (normalizedDiff === 0) return 'center'
   if (normalizedDiff === -1) return 'near'
   if (normalizedDiff === -2) return 'far'
@@ -141,7 +57,6 @@ export default function Gallery() {
   const [activeIndex, setActiveIndex] = useState(0)
   const [paused, setPaused] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
-  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768)
@@ -154,9 +69,7 @@ export default function Gallery() {
     setActiveIndex((prev) => (prev + dir + slides.length) % slides.length)
   }, [])
 
-  const goTo = useCallback((idx: number) => {
-    setActiveIndex(idx)
-  }, [])
+  const goTo = useCallback((idx: number) => setActiveIndex(idx), [])
 
   useEffect(() => {
     if (paused) return
@@ -176,47 +89,31 @@ export default function Gallery() {
   return (
     <section
       id="gallery"
-      className="section-over-bg py-24 md:py-32"
+      className="section-over-bg"
+      style={{ paddingTop: '120px', paddingBottom: '120px' }}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
 
         {/* Header */}
-        <div className="text-center mb-20">
-          <p
-            className="font-sans text-xs uppercase tracking-widest mb-4"
-            style={{ color: 'var(--caramel)' }}
-          >
-            Gallery
-          </p>
+        <FadeUp className="mb-20">
+          <p className="overline mb-5">Gallery</p>
           <h2
-            className="font-serif font-light italic caramel-line-center"
+            className="font-serif font-light italic"
             style={{
-              fontSize: 'clamp(2.2rem, 4.5vw, 3.5rem)',
+              fontSize: 'clamp(2.5rem, 5vw, 4rem)',
               color: 'var(--cream)',
-              lineHeight: 1.2,
+              lineHeight: 1.1,
+              maxWidth: '16ch',
             }}
           >
-            A Feast for the Eyes
-          </h2>
-          <p
-            className="font-sans font-light mt-4"
-            style={{ color: 'rgba(245,237,224,0.6)', fontSize: '1rem' }}
-          >
             Each creation, a moment worth remembering.
-          </p>
-        </div>
+          </h2>
+        </FadeUp>
 
         {/* Arc Carousel */}
-        <div
-          ref={containerRef}
-          style={{
-            perspective: '1200px',
-            perspectiveOrigin: '50% 50%',
-          }}
-        >
-          {/* Cards container */}
+        <div style={{ perspective: '1200px', perspectiveOrigin: '50% 50%' }}>
           <div
             style={{
               position: 'relative',
@@ -242,11 +139,11 @@ export default function Gallery() {
                     position: 'absolute',
                     width: `${cardWidth}px`,
                     aspectRatio: '3/4',
-                    borderRadius: '12px',
+                    borderRadius: '3px',
                     overflow: 'hidden',
                     cursor: isClickable ? 'pointer' : 'default',
                     transformStyle: 'preserve-3d',
-                    boxShadow: isCenter ? '0 30px 60px rgba(0,0,0,0.5)' : 'none',
+                    boxShadow: isCenter ? '0 30px 80px rgba(0,0,0,0.6)' : 'none',
                     willChange: 'transform, opacity, filter',
                   }}
                   aria-hidden={pos === 'hidden'}
@@ -265,15 +162,7 @@ export default function Gallery() {
           </div>
 
           {/* Caption */}
-          <div
-            style={{
-              height: '40px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginTop: '20px',
-            }}
-          >
+          <div style={{ height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '20px' }}>
             <AnimatePresence mode="wait">
               <motion.p
                 key={activeIndex}
@@ -282,11 +171,11 @@ export default function Gallery() {
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.4, ease: 'easeOut' }}
                 style={{
-                  fontFamily: "'Cormorant Garamond', serif",
+                  fontFamily: 'var(--font-cormorant), Georgia, serif',
                   fontStyle: 'italic',
-                  fontSize: '18px',
-                  color: 'rgba(245,237,224,0.88)',
-                  letterSpacing: '0.04em',
+                  fontSize: '1.1rem',
+                  color: 'rgba(245,237,224,0.7)',
+                  letterSpacing: '0.06em',
                   margin: 0,
                   textAlign: 'center',
                 }}
@@ -298,95 +187,61 @@ export default function Gallery() {
         </div>
 
         {/* Navigation */}
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '20px',
-            marginTop: '32px',
-          }}
-        >
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', marginTop: '36px' }}>
           {/* Arrows */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <button
-              onClick={() => go(-1)}
-              aria-label="Previous photo"
-              style={{
-                width: '44px',
-                height: '44px',
-                borderRadius: '50%',
-                border: '1px solid rgba(201,146,90,0.45)',
-                background: 'rgba(13,11,9,0.6)',
-                color: 'rgba(245,237,224,0.85)',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backdropFilter: 'blur(6px)',
-                transition: 'border-color 0.25s, background 0.25s',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(201,146,90,0.9)'
-                e.currentTarget.style.background = 'rgba(201,146,90,0.18)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(201,146,90,0.45)'
-                e.currentTarget.style.background = 'rgba(13,11,9,0.6)'
-              }}
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-
-            <button
-              onClick={() => go(1)}
-              aria-label="Next photo"
-              style={{
-                width: '44px',
-                height: '44px',
-                borderRadius: '50%',
-                border: '1px solid rgba(201,146,90,0.45)',
-                background: 'rgba(13,11,9,0.6)',
-                color: 'rgba(245,237,224,0.85)',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backdropFilter: 'blur(6px)',
-                transition: 'border-color 0.25s, background 0.25s',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(201,146,90,0.9)'
-                e.currentTarget.style.background = 'rgba(201,146,90,0.18)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(201,146,90,0.45)'
-                e.currentTarget.style.background = 'rgba(13,11,9,0.6)'
-              }}
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M6 3L11 8L6 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {[-1, 1].map((dir) => (
+              <button
+                key={dir}
+                onClick={() => go(dir)}
+                aria-label={dir === -1 ? 'Previous photo' : 'Next photo'}
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  border: '1px solid rgba(201,169,110,0.3)',
+                  background: 'transparent',
+                  color: 'rgba(245,237,224,0.6)',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'border-color 0.25s, color 0.25s',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--caramel)'
+                  e.currentTarget.style.color = 'var(--caramel)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = 'rgba(201,169,110,0.3)'
+                  e.currentTarget.style.color = 'rgba(245,237,224,0.6)'
+                }}
+              >
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                  {dir === -1
+                    ? <path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    : <path d="M6 3L11 8L6 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  }
+                </svg>
+              </button>
+            ))}
           </div>
 
           {/* Dots */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             {slides.map((_, i) => (
               <button
                 key={i}
                 onClick={() => goTo(i)}
                 aria-label={`Go to slide ${i + 1}`}
                 style={{
-                  height: '8px',
-                  width: i === activeIndex ? '24px' : '8px',
+                  height: '6px',
+                  width: i === activeIndex ? '20px' : '6px',
                   borderRadius: '9999px',
                   border: 'none',
                   padding: 0,
                   cursor: 'pointer',
-                  background: i === activeIndex ? '#c9925a' : 'rgba(255,255,255,0.28)',
+                  background: i === activeIndex ? 'var(--caramel)' : 'rgba(245,237,224,0.2)',
                   transition: 'width 0.35s ease, background 0.35s ease',
                   flexShrink: 0,
                 }}

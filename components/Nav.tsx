@@ -22,19 +22,23 @@ export default function Nav() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled ? 'nav-scrolled' : 'bg-transparent'
       }`}
-      style={{ transitionDuration: '400ms' }}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between h-16 md:h-20">
         {/* Logo */}
         <Link
           href="#"
-          className="font-serif text-cream text-xl md:text-2xl tracking-wide italic font-light"
-          style={{ color: 'var(--cream)', textDecoration: 'none' }}
+          className="font-serif italic font-light tracking-wide"
+          style={{
+            fontSize: '1.25rem',
+            color: 'var(--cream)',
+            textDecoration: 'none',
+            letterSpacing: '0.03em',
+          }}
         >
-          The Tiramisu Affair
+          Pick Me Up
         </Link>
 
         {/* Desktop Nav */}
@@ -43,17 +47,18 @@ export default function Nav() {
             <a
               key={link.href}
               href={link.href}
-              className="font-sans text-sm tracking-widest uppercase"
+              className="font-sans text-xs tracking-widest uppercase"
               style={{
-                color: 'rgba(245,237,224,0.75)',
+                color: 'rgba(245,237,224,0.6)',
                 textDecoration: 'none',
-                transition: 'color 0.2s',
+                transition: 'color 0.25s',
+                letterSpacing: '0.16em',
               }}
               onMouseEnter={(e) =>
-                ((e.target as HTMLElement).style.color = 'var(--caramel)')
+                ((e.target as HTMLElement).style.color = 'var(--cream)')
               }
               onMouseLeave={(e) =>
-                ((e.target as HTMLElement).style.color = 'rgba(245,237,224,0.75)')
+                ((e.target as HTMLElement).style.color = 'rgba(245,237,224,0.6)')
               }
             >
               {link.label}
@@ -62,9 +67,8 @@ export default function Nav() {
           <a
             href="#workshops"
             className="btn-primary"
-            style={{ fontSize: '0.75rem', padding: '10px 22px' }}
           >
-            Book Now
+            Book
           </a>
         </nav>
 
@@ -75,14 +79,14 @@ export default function Nav() {
           aria-label="Toggle menu"
         >
           <span
-            className="block w-6 h-0.5 bg-cream transition-all duration-300"
+            className="block w-5 h-px transition-all duration-300"
             style={{
               backgroundColor: 'var(--cream)',
-              transform: menuOpen ? 'rotate(45deg) translateY(8px)' : '',
+              transform: menuOpen ? 'rotate(45deg) translateY(6px)' : '',
             }}
           />
           <span
-            className="block w-6 h-0.5"
+            className="block w-5 h-px"
             style={{
               backgroundColor: 'var(--cream)',
               opacity: menuOpen ? 0 : 1,
@@ -90,11 +94,10 @@ export default function Nav() {
             }}
           />
           <span
-            className="block w-6 h-0.5"
+            className="block w-5 h-px transition-all duration-300"
             style={{
               backgroundColor: 'var(--cream)',
-              transform: menuOpen ? 'rotate(-45deg) translateY(-8px)' : '',
-              transition: 'transform 0.3s',
+              transform: menuOpen ? 'rotate(-45deg) translateY(-6px)' : '',
             }}
           />
         </button>
@@ -102,29 +105,31 @@ export default function Nav() {
 
       {/* Mobile menu */}
       <div
-        className="md:hidden overflow-hidden transition-all duration-300"
+        className="md:hidden overflow-hidden transition-all duration-400"
         style={{
-          maxHeight: menuOpen ? '280px' : '0',
-          backgroundColor: 'rgba(13,11,9,0.97)',
+          maxHeight: menuOpen ? '260px' : '0',
+          backgroundColor: 'rgba(10,8,6,0.97)',
+          backdropFilter: 'blur(12px)',
         }}
       >
-        <nav className="flex flex-col px-6 pb-6 pt-2 gap-4">
+        <nav className="flex flex-col px-6 pb-8 pt-2 gap-3">
           {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
-              className="font-sans text-sm tracking-widest uppercase py-2 border-b"
+              className="font-sans text-xs uppercase tracking-widest py-3 border-b"
               style={{
-                color: 'rgba(245,237,224,0.8)',
+                color: 'rgba(245,237,224,0.65)',
                 textDecoration: 'none',
-                borderColor: 'rgba(245,237,224,0.1)',
+                borderColor: 'rgba(245,237,224,0.06)',
+                letterSpacing: '0.18em',
               }}
               onClick={() => setMenuOpen(false)}
             >
               {link.label}
             </a>
           ))}
-          <a href="#workshops" className="btn-primary text-center mt-2" onClick={() => setMenuOpen(false)}>
+          <a href="#workshops" className="btn-primary text-center mt-3" onClick={() => setMenuOpen(false)}>
             Book a Workshop
           </a>
         </nav>

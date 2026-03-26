@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { Cormorant_Garamond, DM_Sans } from 'next/font/google';
 import './globals.css';
+import IntroLoader from '@/components/IntroLoader';
+import CustomCursor from '@/components/CustomCursor';
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
@@ -18,14 +20,14 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'The Tiramisu Affair — Handcrafted Tiramisu Experiences · Brisbane',
+  title: 'Pick Me Up — Artisan Tiramisu',
   description:
-    'Handcrafted tiramisu experiences in Brisbane — pop-ups, bespoke events, tiramisu making workshops and custom creations. Located at Sauce Bistro, Ashgrove.',
+    'Artisan tiramisu experiences in Brisbane — pop-ups, bespoke events, making workshops and custom creations.',
   openGraph: {
-    title: 'The Tiramisu Affair',
-    description: 'Handcrafted Tiramisu Experiences · Brisbane',
+    title: 'Pick Me Up — Artisan Tiramisu',
+    description: 'Handcrafted tiramisu. Brisbane.',
     url: 'https://pickmeup-affair.vercel.app',
-    siteName: 'The Tiramisu Affair',
+    siteName: 'Pick Me Up',
     locale: 'en_AU',
     type: 'website',
   },
@@ -38,7 +40,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${cormorant.variable} ${dmSans.variable}`}>
-      <body>{children}</body>
+      <body>
+        <CustomCursor />
+        <IntroLoader />
+        {children}
+      </body>
     </html>
   );
 }
