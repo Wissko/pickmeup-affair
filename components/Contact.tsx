@@ -1,8 +1,159 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import ScrollReveal from './ScrollReveal';
 import TextReveal from './TextReveal';
+
+const OCCASION_OPTIONS = [
+  { value: 'wedding', label: 'Wedding' },
+  { value: 'birthday', label: 'Birthday' },
+  { value: 'corporate', label: 'Corporate Event' },
+  { value: 'valentines', label: "Valentine's Day" },
+  { value: 'workshop', label: 'Workshop Enquiry' },
+  { value: 'custom', label: 'Custom Order' },
+  { value: 'other', label: 'Other' },
+];
+
+function CustomSelect({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (val: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  const selectedLabel = OCCASION_OPTIONS.find((o) => o.value === value)?.label ?? null;
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      setOpen((o) => !o);
+    } else if (e.key === 'Escape') {
+      setOpen(false);
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      const idx = OCCASION_OPTIONS.findIndex((o) => o.value === value);
+      const next = OCCASION_OPTIONS[Math.min(idx + 1, OCCASION_OPTIONS.length - 1)];
+      onChange(next.value);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      const idx = OCCASION_OPTIONS.findIndex((o) => o.value === value);
+      if (idx > 0) onChange(OCCASION_OPTIONS[idx - 1].value);
+    }
+  };
+
+  return (
+    <div ref={ref} style={{ position: 'relative', width: '100%' }}>
+      {/* Trigger */}
+      <div
+        role="combobox"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        tabIndex={0}
+        onClick={() => setOpen((o) => !o)}
+        onKeyDown={handleKeyDown}
+        className="form-input"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          cursor: 'pointer',
+          userSelect: 'none',
+          color: selectedLabel ? '#f5ede0' : 'rgba(245,237,224,0.38)',
+        }}
+      >
+        <span>{selectedLabel ?? 'Occasion'}</span>
+        {/* Chevron SVG */}
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 12 12"
+          fill="none"
+          style={{
+            transition: 'transform 0.2s ease',
+            transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
+            flexShrink: 0,
+          }}
+        >
+          <path
+            d="M2 4.5L6 8.5L10 4.5"
+            stroke="#c9a96e"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </div>
+
+      {/* Dropdown */}
+      <ul
+        role="listbox"
+        style={{
+          position: 'absolute',
+          top: 'calc(100% + 6px)',
+          left: 0,
+          right: 0,
+          zIndex: 50,
+          margin: 0,
+          padding: '6px 0',
+          listStyle: 'none',
+          backgroundColor: '#0f0c09',
+          border: '1px solid rgba(201,169,110,0.35)',
+          borderRadius: '4px',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.55)',
+          /* animation */
+          opacity: open ? 1 : 0,
+          pointerEvents: open ? 'auto' : 'none',
+          transform: open ? 'translateY(0)' : 'translateY(-6px)',
+          transition: 'opacity 0.2s ease, transform 0.2s ease',
+        }}
+      >
+        {OCCASION_OPTIONS.map((opt) => (
+          <li
+            key={opt.value}
+            role="option"
+            aria-selected={opt.value === value}
+            onClick={() => {
+              onChange(opt.value);
+              setOpen(false);
+            }}
+            style={{
+              padding: '10px 16px',
+              cursor: 'pointer',
+              fontSize: '0.95rem',
+              color: opt.value === value ? '#c9a96e' : '#f5ede0',
+              backgroundColor: opt.value === value ? 'rgba(201,169,110,0.08)' : 'transparent',
+              transition: 'background-color 0.15s, color 0.15s',
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(201,169,110,0.1)';
+              (e.currentTarget as HTMLElement).style.color = '#c9a96e';
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.backgroundColor =
+                opt.value === value ? 'rgba(201,169,110,0.08)' : 'transparent';
+              (e.currentTarget as HTMLElement).style.color =
+                opt.value === value ? '#c9a96e' : '#f5ede0';
+            }}
+          >
+            {opt.label}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -14,9 +165,13 @@ export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleOccasionChange = (val: string) => {
+    setFormData({ ...formData, occasion: val });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -160,21 +315,7 @@ export default function Contact() {
                     className="form-input"
                   />
                 </div>
-                <select
-                  name="occasion"
-                  value={formData.occasion}
-                  onChange={handleChange}
-                  className="form-input"
-                >
-                  <option value="">Occasion</option>
-                  <option value="wedding">Wedding</option>
-                  <option value="birthday">Birthday</option>
-                  <option value="corporate">Corporate Event</option>
-                  <option value="valentines">Valentine's Day</option>
-                  <option value="workshop">Workshop Enquiry</option>
-                  <option value="custom">Custom Order</option>
-                  <option value="other">Other</option>
-                </select>
+                <CustomSelect value={formData.occasion} onChange={handleOccasionChange} />
                 <textarea
                   name="message"
                   placeholder="Tell us about your occasion…"
