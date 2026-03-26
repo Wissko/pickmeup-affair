@@ -1,18 +1,46 @@
-import FadeUp from './FadeUp';
+import Image from 'next/image';
+import ScrollReveal from './ScrollReveal';
+import TextReveal from './TextReveal';
 
 export default function Workshops() {
   return (
     <section
       id="workshops"
-      className="section-over-bg"
-      style={{ paddingTop: '120px', paddingBottom: '120px' }}
+      style={{ position: 'relative', zIndex: 1, backgroundColor: '#0a0806' }}
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        <div className="grid md:grid-cols-2 gap-16 lg:gap-24 items-start">
-          {/* Left — heading */}
-          <FadeUp>
+      <div className="workshops-split">
+        {/* Left — full image */}
+        <div className="img-hover-wrap relative overflow-hidden" style={{ minHeight: '600px' }}>
+          <Image
+            src="/images/craft.jpg"
+            alt="Hands crafting tiramisu at a workshop"
+            fill
+            className="object-cover"
+            sizes="50vw"
+          />
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'linear-gradient(to right, transparent 70%, #0f0c08 100%)',
+            }}
+          />
+        </div>
+
+        {/* Right — solid dark, text */}
+        <div
+          style={{
+            backgroundColor: '#0f0c08',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            padding: '80px 60px',
+          }}
+        >
+          <ScrollReveal>
             <p className="overline mb-6">Workshops</p>
-            <h2
+            <TextReveal
+              as="h2"
               className="font-serif font-light italic caramel-line"
               style={{
                 fontSize: 'clamp(2.8rem, 5vw, 4.5rem)',
@@ -20,9 +48,8 @@ export default function Workshops() {
                 lineHeight: 1.1,
               }}
             >
-              Make it yourself.
-              <br />Take it home.
-            </h2>
+              Make it yourself. Take it home.
+            </TextReveal>
             <p
               className="font-sans font-light mt-10"
               style={{
@@ -45,14 +72,10 @@ export default function Workshops() {
                 Reserve Your Spot
               </a>
             </div>
-          </FadeUp>
+          </ScrollReveal>
 
-          {/* Right — details */}
-          <FadeUp delay={0.15}>
-            <div
-              className="space-y-0"
-              style={{ marginTop: '3rem' }}
-            >
+          <ScrollReveal delay={0.15}>
+            <div className="space-y-0 mt-14">
               {[
                 {
                   heading: 'Location',
@@ -84,7 +107,7 @@ export default function Workshops() {
                 </div>
               ))}
             </div>
-          </FadeUp>
+          </ScrollReveal>
         </div>
       </div>
     </section>

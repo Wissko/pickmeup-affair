@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import FadeUp from './FadeUp';
+import ScrollReveal from './ScrollReveal';
+import TextReveal from './TextReveal';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -26,15 +27,21 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      className="section-transparent"
-      style={{ paddingTop: '120px', paddingBottom: '120px' }}
+      style={{
+        paddingTop: '120px',
+        paddingBottom: '120px',
+        backgroundColor: '#060503',
+        position: 'relative',
+        zIndex: 1,
+      }}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="grid md:grid-cols-2 gap-16 lg:gap-24">
           {/* Info */}
-          <FadeUp>
+          <ScrollReveal>
             <p className="overline mb-6">Get in Touch</p>
-            <h2
+            <TextReveal
+              as="h2"
               className="font-serif font-light italic caramel-line"
               style={{
                 fontSize: 'clamp(2.8rem, 5vw, 4.5rem)',
@@ -42,9 +49,8 @@ export default function Contact() {
                 lineHeight: 1.1,
               }}
             >
-              Let's create
-              <br />something sweet.
-            </h2>
+              Let&apos;s create something sweet.
+            </TextReveal>
 
             <div className="mt-14 space-y-10">
               <div>
@@ -53,17 +59,35 @@ export default function Contact() {
                   className="font-sans font-light"
                   style={{ color: 'rgba(245,237,224,0.55)', lineHeight: 1, fontSize: '0.9rem' }}
                 >
-                  <div style={{ display: 'flex', gap: '1.5rem', paddingBottom: '14px', borderBottom: '1px solid rgba(245,237,224,0.06)' }}>
-                    <span style={{ color: 'var(--caramel)', letterSpacing: '0.1em', fontSize: '0.72rem', textTransform: 'uppercase', minWidth: '3rem' }}>Wed</span>
-                    <span>8am–6pm &nbsp;·&nbsp; Reddacliff Place</span>
+                  {/* Thursday */}
+                  <div style={{ paddingBottom: '16px', borderBottom: '1px solid rgba(245,237,224,0.06)' }}>
+                    <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'baseline', marginBottom: '4px' }}>
+                      <span style={{ color: 'var(--caramel)', letterSpacing: '0.1em', fontSize: '0.72rem', textTransform: 'uppercase', minWidth: '3.5rem' }}>Thu</span>
+                      <span>8am–2pm</span>
+                    </div>
+                    <div style={{ paddingLeft: '5rem', color: 'rgba(245,237,224,0.38)', fontSize: '0.8rem', lineHeight: 1.5 }}>
+                      Cathedral Square Markets<br />410 Ann Street, Brisbane
+                    </div>
                   </div>
-                  <div style={{ display: 'flex', gap: '1.5rem', paddingTop: '14px', paddingBottom: '14px', borderBottom: '1px solid rgba(245,237,224,0.06)' }}>
-                    <span style={{ color: 'var(--caramel)', letterSpacing: '0.1em', fontSize: '0.72rem', textTransform: 'uppercase', minWidth: '3rem' }}>Thu</span>
-                    <span>8am–2pm &nbsp;·&nbsp; Cathedral Square</span>
+                  {/* Saturday */}
+                  <div style={{ paddingTop: '16px', paddingBottom: '16px', borderBottom: '1px solid rgba(245,237,224,0.06)' }}>
+                    <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'baseline', marginBottom: '4px' }}>
+                      <span style={{ color: 'var(--caramel)', letterSpacing: '0.1em', fontSize: '0.72rem', textTransform: 'uppercase', minWidth: '3.5rem' }}>Sat</span>
+                      <span>6am–12pm</span>
+                    </div>
+                    <div style={{ paddingLeft: '5rem', color: 'rgba(245,237,224,0.38)', fontSize: '0.8rem', lineHeight: 1.5 }}>
+                      Brisbane Markets<br />385 Sherwood Rd, Rocklea
+                    </div>
                   </div>
-                  <div style={{ display: 'flex', gap: '1.5rem', paddingTop: '14px' }}>
-                    <span style={{ color: 'var(--caramel)', letterSpacing: '0.1em', fontSize: '0.72rem', textTransform: 'uppercase', minWidth: '3rem' }}>Thu</span>
-                    <span>8am–2pm &nbsp;·&nbsp; Queen's Wharf</span>
+                  {/* Sunday */}
+                  <div style={{ paddingTop: '16px' }}>
+                    <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'baseline', marginBottom: '4px' }}>
+                      <span style={{ color: 'var(--caramel)', letterSpacing: '0.1em', fontSize: '0.72rem', textTransform: 'uppercase', minWidth: '3.5rem' }}>Sun</span>
+                      <span>6am–12pm</span>
+                    </div>
+                    <div style={{ paddingLeft: '5rem', color: 'rgba(245,237,224,0.38)', fontSize: '0.8rem', lineHeight: 1.5 }}>
+                      Nundah Markets<br />Station St, Nundah
+                    </div>
                   </div>
                 </div>
               </div>
@@ -98,10 +122,10 @@ export default function Contact() {
                 </a>
               </div>
             </div>
-          </FadeUp>
+          </ScrollReveal>
 
           {/* Form */}
-          <FadeUp delay={0.18}>
+          <ScrollReveal delay={0.18}>
             {submitted ? (
               <div className="flex flex-col justify-center items-start h-full py-16">
                 <h3
@@ -165,7 +189,7 @@ export default function Contact() {
                 </button>
               </form>
             )}
-          </FadeUp>
+          </ScrollReveal>
         </div>
       </div>
     </section>

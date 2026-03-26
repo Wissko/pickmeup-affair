@@ -28,58 +28,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Custom cursor */
-*, *::before, *::after {
-  cursor: none !important;
-}
-
-.cursor-dot {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--caramel);
-  pointer-events: none;
-  z-index: 99999;
-  transform: translate(-50%, -50%);
-  mix-blend-mode: normal;
-}
-
-.cursor-ring {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 1px solid var(--caramel);
-  pointer-events: none;
-  z-index: 99998;
-  transform: translate(-50%, -50%);
-  opacity: 0.7;
-  transition: width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-              height 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-              border-radius 0.3s ease,
-              opacity 0.3s ease,
-              border-color 0.3s ease;
-}
-
-/* Ripple animation */
-@keyframes cursor-ripple {
-  0% {
-    width: 0;
-    height: 0;
-    opacity: 0.8;
-  }
-  100% {
-    width: 60px;
-    height: 60px;
-    opacity: 0;
-  }
-}
-
 /* Ambient pulse on gold line */
 @keyframes ambient-pulse {
   0%, 100% { opacity: 0.5; transform: scaleX(1); }
@@ -239,7 +187,7 @@ body {
   text-transform: uppercase;
   text-decoration: none;
   transition: background-color 0.3s ease, color 0.3s ease;
-  cursor: none;
+
 }
 
 .btn-primary:hover {
@@ -260,7 +208,7 @@ body {
   text-transform: uppercase;
   text-decoration: none;
   transition: border-color 0.3s ease, color 0.3s ease;
-  cursor: none;
+
 }
 
 .btn-outline:hover {
@@ -281,7 +229,7 @@ body {
   text-transform: uppercase;
   text-decoration: none;
   transition: border-color 0.3s ease, background 0.3s ease, color 0.3s ease;
-  cursor: none;
+
 }
 
 .btn-outline-caramel:hover {
@@ -343,4 +291,62 @@ select.form-input option {
   color: var(--caramel);
   font-weight: 400;
   opacity: 0.85;
+}
+
+/* ─── Experiences responsive grid ─── */
+@media (max-width: 767px) {
+  .experiences-row {
+    grid-template-columns: 1fr !important;
+  }
+  .experiences-row > *:first-child {
+    order: 0 !important;
+    min-height: 260px !important;
+  }
+  .experiences-row > *:last-child {
+    order: 1 !important;
+  }
+}
+
+/* ─── Occasions ghost typography ─── */
+.ghost-title {
+  -webkit-text-stroke: 1px rgba(201,169,110,0.18);
+  color: transparent;
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-style: italic;
+  font-weight: 300;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ─── Gallery section vignette ─── */
+.gallery-vignette::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(8,6,4,0.7) 100%);
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ─── Workshops two-column ─── */
+.workshops-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 600px;
+}
+
+@media (max-width: 767px) {
+  .workshops-split {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─── Contact section ─── */
+.contact-dark {
+  background-color: #08060400;
+}
+
+/* ─── Cursor restore ─── */
+*, *::before, *::after {
+  cursor: unset;
 }

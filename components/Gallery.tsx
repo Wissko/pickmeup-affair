@@ -3,7 +3,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
-import FadeUp from './FadeUp'
+import ScrollReveal from './ScrollReveal'
+import TextReveal from './TextReveal'
 
 const slides = [
   { src: '/images/hero.jpg',   alt: 'The Signature tiramisu',          caption: 'The Signature' },
@@ -57,6 +58,9 @@ export default function Gallery() {
   const [activeIndex, setActiveIndex] = useState(0)
   const [paused, setPaused] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
+  const dragStartX = useRef(0)
+  const dragThreshold = 50
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768)
@@ -89,17 +93,23 @@ export default function Gallery() {
   return (
     <section
       id="gallery"
-      className="section-over-bg"
-      style={{ paddingTop: '120px', paddingBottom: '120px' }}
+      style={{
+        paddingTop: '120px',
+        paddingBottom: '120px',
+        backgroundColor: '#0d0b08',
+        position: 'relative',
+        zIndex: 1,
+      }}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
 
         {/* Header */}
-        <FadeUp className="mb-20">
+        <ScrollReveal className="mb-20">
           <p className="overline mb-5">Gallery</p>
-          <h2
+          <TextReveal
+            as="h2"
             className="font-serif font-light italic"
             style={{
               fontSize: 'clamp(2.5rem, 5vw, 4rem)',
@@ -109,8 +119,8 @@ export default function Gallery() {
             }}
           >
             Each creation, a moment worth remembering.
-          </h2>
-        </FadeUp>
+          </TextReveal>
+        </ScrollReveal>
 
         {/* Arc Carousel */}
         <div style={{ perspective: '1200px', perspectiveOrigin: '50% 50%' }}>
@@ -122,6 +132,21 @@ export default function Gallery() {
               alignItems: 'center',
               justifyContent: 'center',
               transformStyle: 'preserve-3d',
+              cursor: isDragging ? 'grabbing' : 'grab',
+              userSelect: 'none',
+            }}
+            onMouseDown={(e) => { dragStartX.current = e.clientX; setIsDragging(true) }}
+            onMouseUp={(e) => {
+              if (!isDragging) return
+              const diff = e.clientX - dragStartX.current
+              if (Math.abs(diff) > dragThreshold) go(diff < 0 ? 1 : -1)
+              setIsDragging(false)
+            }}
+            onMouseLeave={() => setIsDragging(false)}
+            onTouchStart={(e) => { dragStartX.current = e.touches[0].clientX }}
+            onTouchEnd={(e) => {
+              const diff = e.changedTouches[0].clientX - dragStartX.current
+              if (Math.abs(diff) > dragThreshold) go(diff < 0 ? 1 : -1)
             }}
           >
             {slides.map((slide, i) => {
@@ -227,26 +252,33 @@ export default function Gallery() {
             ))}
           </div>
 
-          {/* Dots */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            {slides.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => goTo(i)}
-                aria-label={`Go to slide ${i + 1}`}
-                style={{
-                  height: '6px',
-                  width: i === activeIndex ? '20px' : '6px',
-                  borderRadius: '9999px',
-                  border: 'none',
-                  padding: 0,
-                  cursor: 'pointer',
-                  background: i === activeIndex ? 'var(--caramel)' : 'rgba(245,237,224,0.2)',
-                  transition: 'width 0.35s ease, background 0.35s ease',
-                  flexShrink: 0,
-                }}
-              />
-            ))}
+          {/* Progress bar — thin gold slider */}
+          <div
+            style={{
+              width: '200px',
+              height: '1px',
+              background: 'rgba(245,237,224,0.12)',
+              position: 'relative',
+              borderRadius: '9999px',
+              overflow: 'hidden',
+            }}
+            role="progressbar"
+            aria-valuenow={activeIndex + 1}
+            aria-valuemin={1}
+            aria-valuemax={slides.length}
+          >
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                height: '100%',
+                width: `${((activeIndex + 1) / slides.length) * 100}%`,
+                background: 'var(--caramel)',
+                borderRadius: '9999px',
+                transition: 'width 0.6s cubic-bezier(0.76, 0, 0.24, 1)',
+              }}
+            />
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import TextReveal from './TextReveal';
 
 export default function Hero() {
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -41,9 +42,6 @@ export default function Hero() {
     };
   }, []);
 
-  // Words for staggered reveal
-  const words = ['Pick', 'Me', 'Up'];
-
   return (
     <section
       id="hero"
@@ -68,33 +66,25 @@ export default function Hero() {
           Brisbane · Artisan Tiramisu
         </p>
 
-        {/* H1 — word-by-word reveal */}
-        <h1
-          ref={titleRef}
-          className="font-serif font-light italic"
-          style={{
-            fontSize: 'clamp(70px, 22vw, 130px)',
-            lineHeight: 0.95,
-            color: 'var(--cream)',
-            marginBottom: '2rem',
-            letterSpacing: '-0.01em',
-            willChange: 'transform',
-            display: 'block',
-          }}
-        >
-          {words.map((word, i) => (
-            <span
-              key={word}
-              className="word-reveal"
-              style={{
-                animationDelay: `${0.3 + i * 0.15}s`,
-                marginRight: i < words.length - 1 ? '0.28em' : 0,
-              }}
-            >
-              {word}
-            </span>
-          ))}
-        </h1>
+        {/* H1 — Lune-style curtain lift word reveal */}
+        <div ref={titleRef} style={{ willChange: 'transform', marginBottom: '2rem' }}>
+          <TextReveal
+            as="h1"
+            className="font-serif font-light italic"
+            style={{
+              fontSize: 'clamp(70px, 22vw, 130px)',
+              lineHeight: 0.95,
+              color: 'var(--cream)',
+              letterSpacing: '-0.01em',
+              display: 'block',
+            }}
+            delay={0.3}
+            stagger={0.12}
+            once={true}
+          >
+            Pick Me Up
+          </TextReveal>
+        </div>
 
         {/* Poetic tagline */}
         <p
