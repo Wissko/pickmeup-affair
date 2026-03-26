@@ -350,3 +350,13 @@ select.form-input option {
 *, *::before, *::after {
   cursor: unset;
 }
+
+/* ─── Logo nav responsive ─── */
+.logo-nav {
+  height: 32px !important;
+}
+@media (min-width: 768px) {
+  .logo-nav {
+    height: 40px !important;
+  }
+}

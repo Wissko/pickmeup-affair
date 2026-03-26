@@ -1,5 +1,7 @@
 'use client';
 
+import Image from 'next/image';
+
 export default function Footer() {
   return (
     <footer
@@ -14,12 +16,17 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 md:gap-0">
           {/* Logo & tagline */}
           <div>
-            <p
-              className="font-serif italic font-light"
-              style={{ fontSize: '1.4rem', color: 'var(--cream)', letterSpacing: '0.02em' }}
-            >
-              Pick Me Up
-            </p>
+            <Image
+              src="/images/logopickmeup.PNG"
+              alt="Pick Me Up"
+              width={144}
+              height={36}
+              style={{
+                height: '36px',
+                width: 'auto',
+                filter: 'brightness(0) invert(1)',
+              }}
+            />
             <p
               className="font-sans font-light text-xs mt-1 uppercase tracking-widest"
               style={{ color: 'rgba(245,237,224,0.3)', letterSpacing: '0.16em' }}

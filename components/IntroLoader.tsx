@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function IntroLoader() {
@@ -40,23 +41,26 @@ export default function IntroLoader() {
             gap: '1.5rem',
           }}
         >
-          {/* Brand name — fade in */}
-          <motion.p
+          {/* Brand logo — fade in */}
+          <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            style={{
-              fontFamily: 'var(--font-cormorant), Georgia, serif',
-              fontStyle: 'italic',
-              fontWeight: 300,
-              fontSize: 'clamp(2.8rem, 8vw, 5.5rem)',
-              color: '#f5ede0',
-              letterSpacing: '0.04em',
-              lineHeight: 1,
-            }}
+            style={{ display: 'flex', justifyContent: 'center' }}
           >
-            Pick Me Up
-          </motion.p>
+            <Image
+              src="/images/logopickmeup.PNG"
+              alt="Pick Me Up"
+              width={320}
+              height={80}
+              priority
+              style={{
+                height: '80px',
+                width: 'auto',
+                filter: 'brightness(0) invert(1)',
+              }}
+            />
+          </motion.div>
 
           {/* Thin gold line — draws in */}
           <motion.div
