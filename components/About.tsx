@@ -53,7 +53,7 @@ export default function About() {
           <FadeUp delay={0.2}>
             <div
               className="relative overflow-hidden"
-              style={{ aspectRatio: '4/5', borderRadius: '2px' }}
+              style={{ aspectRatio: '4/5', borderRadius: '4px' }}
             >
               <Image
                 src="/images/craft.jpg"

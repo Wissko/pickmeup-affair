@@ -47,7 +47,7 @@ export default function Occasions() {
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-start mb-16">
           {/* Image 1 */}
           <FadeUp delay={0.1}>
-            <div className="relative overflow-hidden" style={{ aspectRatio: '4/3', borderRadius: '2px' }}>
+            <div className="relative overflow-hidden" style={{ aspectRatio: '4/5', borderRadius: '4px' }}>
               <Image
                 src="/images/events.jpg"
                 alt='Tiramisu "Just Married" wedding gift box'
@@ -70,7 +70,7 @@ export default function Occasions() {
 
           {/* Image 2 */}
           <FadeUp delay={0.2}>
-            <div className="relative overflow-hidden" style={{ aspectRatio: '4/3', borderRadius: '2px' }}>
+            <div className="relative overflow-hidden" style={{ aspectRatio: '4/5', borderRadius: '4px' }}>
               <Image
                 src="/images/gift.jpg"
                 alt='Tiramisu "Be Mine" luxury gift box'
