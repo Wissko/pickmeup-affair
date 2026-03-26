@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 
 const navLinks = [
@@ -29,20 +28,19 @@ export default function Nav() {
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between h-16 md:h-20">
         {/* Logo */}
-        <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}>
-          <Image
-            src="/images/logopickmeup.PNG"
-            alt="Pick Me Up"
-            width={160}
-            height={40}
-            priority
+        <Link href="/" style={{ textDecoration: 'none' }}>
+          <span
             style={{
-              height: '40px',
-              width: 'auto',
-              filter: 'brightness(0) invert(1)',
+              fontFamily: "'Cormorant Garamond', serif",
+              fontStyle: 'italic',
+              fontWeight: 400,
+              fontSize: '1.5rem',
+              color: 'var(--cream)',
+              letterSpacing: '0.04em',
             }}
-            className="logo-nav"
-          />
+          >
+            Pick Me Up
+          </span>
         </Link>
 
         {/* Desktop Nav */}
