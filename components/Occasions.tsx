@@ -51,7 +51,8 @@ export default function Occasions() {
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
 
         {/* Header */}
-        <ScrollReveal style={{ marginBottom: 'clamp(3rem, 6vw, 5rem)' }}>
+        <div style={{ marginBottom: 'clamp(3rem, 6vw, 5rem)' }}>
+        <ScrollReveal>
           <p className="overline mb-5" style={{ color: 'rgba(201,169,110,0.65)' }}>
             Occasions
           </p>
@@ -68,6 +69,7 @@ export default function Occasions() {
             Every milestone deserves something beautiful.
           </TextReveal>
         </ScrollReveal>
+        </div>
 
         {/* Photo grid — editorial, no equal-size cards */}
         <div
@@ -79,10 +81,8 @@ export default function Occasions() {
           }}
         >
           {/* Wide feature — Weddings */}
-          <ScrollReveal
-            delay={0}
-            style={{ gridColumn: '1 / 3', gridRow: '1 / 2' }}
-          >
+          <div style={{ gridColumn: '1 / 3', gridRow: '1 / 2' }}>
+          <ScrollReveal delay={0}>
             <div
               className="img-hover-wrap"
               style={{
@@ -125,12 +125,11 @@ export default function Occasions() {
               </div>
             </div>
           </ScrollReveal>
+          </div>
 
           {/* Gifting — tall right */}
-          <ScrollReveal
-            delay={0.06}
-            style={{ gridColumn: '3 / 4', gridRow: '1 / 3' }}
-          >
+          <div style={{ gridColumn: '3 / 4', gridRow: '1 / 3' }}>
+          <ScrollReveal delay={0.06}>
             <div
               className="img-hover-wrap"
               style={{
@@ -175,12 +174,11 @@ export default function Occasions() {
               </div>
             </div>
           </ScrollReveal>
+          </div>
 
           {/* Corporate — tall far right */}
-          <ScrollReveal
-            delay={0.1}
-            style={{ gridColumn: '4 / 5', gridRow: '1 / 3' }}
-          >
+          <div style={{ gridColumn: '4 / 5', gridRow: '1 / 3' }}>
+          <ScrollReveal delay={0.1}>
             <div
               className="img-hover-wrap"
               style={{
@@ -225,12 +223,11 @@ export default function Occasions() {
               </div>
             </div>
           </ScrollReveal>
+          </div>
 
           {/* Custom orders */}
-          <ScrollReveal
-            delay={0.04}
-            style={{ gridColumn: '1 / 2', gridRow: '2 / 3' }}
-          >
+          <div style={{ gridColumn: '1 / 2', gridRow: '2 / 3' }}>
+          <ScrollReveal delay={0.04}>
             <div
               className="img-hover-wrap"
               style={{
@@ -274,12 +271,11 @@ export default function Occasions() {
               </div>
             </div>
           </ScrollReveal>
+          </div>
 
           {/* Pop-ups */}
-          <ScrollReveal
-            delay={0.08}
-            style={{ gridColumn: '2 / 3', gridRow: '2 / 3' }}
-          >
+          <div style={{ gridColumn: '2 / 3', gridRow: '2 / 3' }}>
+          <ScrollReveal delay={0.08}>
             <div
               className="img-hover-wrap"
               style={{
@@ -323,14 +319,17 @@ export default function Occasions() {
               </div>
             </div>
           </ScrollReveal>
+          </div>
         </div>
 
         {/* CTA */}
-        <ScrollReveal style={{ marginTop: 'clamp(2.5rem, 5vw, 4rem)', textAlign: 'center' }}>
+        <div style={{ marginTop: 'clamp(2.5rem, 5vw, 4rem)', textAlign: 'center' }}>
+        <ScrollReveal>
           <a href="#contact" className="btn-outline-caramel">
             Enquire About Your Occasion
           </a>
         </ScrollReveal>
+        </div>
       </div>
     </section>
   );
