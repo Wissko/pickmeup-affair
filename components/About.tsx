@@ -7,78 +7,107 @@ export default function About() {
     <section
       id="about"
       style={{
-        paddingTop: '120px',
-        paddingBottom: '120px',
-        backgroundColor: '#f5ede0',
         position: 'relative',
         zIndex: 1,
+        backgroundColor: '#f5ede0',
       }}
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        <div className="grid md:grid-cols-2 gap-16 lg:gap-24 items-center">
-          {/* Text */}
-          <ScrollReveal>
+      {/* Split layout — full bleed, no padding container */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 420px), 1fr))' }}>
+
+        {/* Image — coeur.jpg: flat lay 3 tiramisus, heart, branded pochon */}
+        <div style={{ position: 'relative', minHeight: 'clamp(380px, 52vw, 680px)', overflow: 'hidden' }}>
+          <Image
+            src="/images/coeur.jpg"
+            alt="Trois tiramisus avec un coeur en sucre glace et pochon Pick Me Up"
+            fill
+            className="object-cover"
+            style={{ objectPosition: 'center' }}
+            sizes="(max-width: 768px) 100vw, 50vw"
+          />
+          {/* Subtle right-side fade into cream */}
+          <div
+            aria-hidden="true"
+            style={{
+              position: 'absolute', inset: 0,
+              background: 'linear-gradient(to right, transparent 55%, #f5ede0 100%)',
+            }}
+          />
+        </div>
+
+        {/* Text */}
+        <ScrollReveal>
+          <div
+            style={{
+              backgroundColor: '#f5ede0',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              padding: 'clamp(3rem, 7vw, 6rem) clamp(2rem, 6vw, 5rem)',
+            }}
+          >
             <p
               className="overline mb-6"
-              style={{ color: 'rgba(10,8,6,0.45)' }}
+              style={{ color: 'rgba(10,8,6,0.38)' }}
             >
               Our Story
             </p>
+
+            <TextReveal
+              as="h2"
+              className="font-serif font-light italic"
+              style={{
+                fontSize: 'clamp(2.4rem, 4.5vw, 3.8rem)',
+                lineHeight: 1.1,
+                color: '#1a1208',
+                letterSpacing: '-0.01em',
+                marginBottom: '0.5rem',
+              }}
+            >
+              Every spoonful,
+            </TextReveal>
             <TextReveal
               as="h2"
               className="font-serif font-light italic caramel-line"
               style={{
-                fontSize: 'clamp(2.8rem, 5vw, 4.5rem)',
+                fontSize: 'clamp(2.4rem, 4.5vw, 3.8rem)',
                 lineHeight: 1.1,
-                color: '#1a1208',
+                color: '#c9a96e',
+                letterSpacing: '-0.01em',
               }}
             >
-              Born from love. Crafted with care.
+              a small love affair.
             </TextReveal>
-            <p
-              className="font-sans font-light mt-10"
-              style={{
-                color: 'rgba(26,18,8,0.65)',
-                lineHeight: 1.9,
-                fontSize: '1rem',
-                maxWidth: '42ch',
-              }}
-            >
-              Pick Me Up brings tiramisu to life through immersive pop-ups,
-              bespoke event creations, and intimate making workshops.
-              Every encounter should feel like a small love affair.
-            </p>
-            <p
-              className="font-sans font-light mt-5"
-              style={{
-                color: 'rgba(26,18,8,0.38)',
-                fontSize: '0.85rem',
-                letterSpacing: '0.06em',
-              }}
-            >
-              Sauce Bistro, Ashgrove · Brisbane
-            </p>
-          </ScrollReveal>
 
-          {/* Image */}
-          <ScrollReveal delay={0.2}>
-            <div className="img-hover-wrap relative overflow-hidden" style={{ aspectRatio: '4/5', borderRadius: '2px' }}>
-              <Image
-                src="/images/spoon.jpg"
-                alt="Artisan tiramisu, close up"
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-              <div
-                className="absolute inset-0"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(201,169,110,0.10) 0%, transparent 60%)',
-                }}
-              />
-            </div>
-          </ScrollReveal>
-        </div>
+            <p
+              className="font-sans font-light"
+              style={{
+                color: 'rgba(26,18,8,0.6)',
+                lineHeight: 1.9,
+                fontSize: '0.95rem',
+                maxWidth: '40ch',
+                marginTop: '2.5rem',
+              }}
+            >
+              Pick Me Up brings tiramisu to life through pop-ups at Brisbane's
+              best markets, bespoke event creations, and intimate making workshops.
+              Handcrafted with real ingredients. Finished with intention.
+            </p>
+
+            <p
+              className="font-sans font-light"
+              style={{
+                color: 'rgba(26,18,8,0.3)',
+                fontSize: '0.78rem',
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                marginTop: '2rem',
+              }}
+            >
+              Sauce Bistro · Ashgrove · Brisbane
+            </p>
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );

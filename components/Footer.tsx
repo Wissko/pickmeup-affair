@@ -97,7 +97,7 @@ export default function Footer() {
             className="font-sans text-xs"
             style={{ color: 'rgba(245,237,224,0.2)', letterSpacing: '0.06em' }}
           >
-            © 2025 Pick Me Up. All rights reserved. · Thu · Sat · Sun — Brisbane Markets
+            © 2025 Pick Me Up. All rights reserved. · Thu · Sat · Sun · Brisbane Markets
           </p>
         </div>
       </div>
