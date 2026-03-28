@@ -11,6 +11,7 @@ const entries = [
     href: '#contact',
     image: '/images/events.jpg',
     imageAlt: 'Tiramisu at an event',
+    caption: 'Tiramisu bar · private events',
     imageLeft: true,
   },
   {
@@ -21,6 +22,7 @@ const entries = [
     href: '#contact',
     image: '/images/custom.jpg',
     imageAlt: 'Custom tiramisu creation',
+    caption: 'Hand-finished · made to order',
     imageLeft: false,
   },
   {
@@ -31,6 +33,7 @@ const entries = [
     href: '#workshops',
     image: '/images/craft.jpg',
     imageAlt: 'Hands crafting tiramisu',
+    caption: 'Hands-on · Ashgrove, Brisbane',
     imageLeft: true,
   },
 ];
@@ -93,16 +96,35 @@ export default function Experiences() {
                     className="object-cover"
                     sizes="50vw"
                   />
-                  {/* Dark overlay with caramel gradient */}
+
+                  {/* Caption overlay — glassmorphism bottom-left */}
                   <div
                     style={{
                       position: 'absolute',
-                      inset: 0,
-                      background: entry.imageLeft
-                        ? 'linear-gradient(to right, transparent 60%, #0a0806 100%)'
-                        : 'linear-gradient(to left, transparent 60%, #0a0806 100%)',
+                      bottom: '24px',
+                      left: '24px',
+                      backgroundColor: 'rgba(10,8,6,0.62)',
+                      backdropFilter: 'blur(12px)',
+                      WebkitBackdropFilter: 'blur(12px)',
+                      border: '1px solid rgba(201,169,110,0.14)',
+                      borderRadius: '4px',
+                      padding: '8px 14px',
+                      zIndex: 2,
                     }}
-                  />
+                  >
+                    <p
+                      className="font-sans"
+                      style={{
+                        fontSize: '0.6rem',
+                        letterSpacing: '0.2em',
+                        textTransform: 'uppercase',
+                        color: 'rgba(245,237,224,0.65)',
+                        margin: 0,
+                      }}
+                    >
+                      {entry.caption}
+                    </p>
+                  </div>
                 </div>
 
                 {/* Text side */}

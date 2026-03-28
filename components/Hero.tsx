@@ -51,22 +51,38 @@ export default function Hero() {
       {/* Gradient overlay on top of fixed bg */}
       <div className="hero-overlay" />
 
-      {/* Spacer — fixed bg (hero-bg) handles image */}
-
       {/* Content */}
       <div
         className="relative z-10 text-center px-6 max-w-5xl mx-auto"
         style={{ willChange: 'transform' }}
       >
-        {/* Overline */}
-        <p
-          className="overline mb-8"
-          style={{ animation: 'word-reveal 1.2s ease forwards', opacity: 0, animationDelay: '0.1s' }}
+        {/* Overline — pill sombre for legibility over photo */}
+        <div
+          style={{
+            display: 'inline-block',
+            marginBottom: '2rem',
+            animation: 'word-reveal 1.2s ease forwards',
+            opacity: 0,
+            animationDelay: '0.1s',
+          }}
         >
-          Brisbane · Artisan Tiramisu
-        </p>
+          <p
+            className="overline"
+            style={{
+              backgroundColor: 'rgba(10,8,6,0.72)',
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)',
+              padding: '6px 20px',
+              borderRadius: '100px',
+              border: '1px solid rgba(201,169,110,0.18)',
+              margin: 0,
+            }}
+          >
+            Brisbane · Artisan Tiramisu
+          </p>
+        </div>
 
-        {/* H1 — Lune-style curtain lift word reveal */}
+        {/* H1 — curtain lift word reveal */}
         <div ref={titleRef} style={{ willChange: 'transform', marginBottom: '2rem' }}>
           <TextReveal
             as="h1"
@@ -120,65 +136,14 @@ export default function Hero() {
             Book a Workshop
           </a>
           <a href="#experiences" className="btn-outline">
-            Discover
+            Explore
           </a>
         </div>
       </div>
 
-      {/* Ambient ornament — slow-spinning gold ring */}
+      {/* Scroll indicator — gold line only */}
       <div
-        style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          width: '520px',
-          height: '520px',
-          marginTop: '-260px',
-          marginLeft: '-260px',
-          border: '1px solid rgba(201,169,110,0.07)',
-          borderRadius: '50%',
-          pointerEvents: 'none',
-          animation: 'slow-spin 200s linear infinite',
-          zIndex: 2,
-        }}
-      />
-      <div
-        style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          width: '380px',
-          height: '380px',
-          marginTop: '-190px',
-          marginLeft: '-190px',
-          border: '1px solid rgba(201,169,110,0.04)',
-          borderRadius: '50%',
-          pointerEvents: 'none',
-          animation: 'slow-spin 140s linear infinite reverse',
-          zIndex: 2,
-        }}
-      />
-
-      {/* Ambient pulse line */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: '140px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: '48px',
-          height: '1px',
-          background: 'var(--caramel)',
-          opacity: 0.5,
-          animation: 'ambient-pulse 3s ease-in-out infinite',
-          transformOrigin: 'center',
-          zIndex: 3,
-        }}
-      />
-
-      {/* Scroll indicator */}
-      <div
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center"
         style={{
           animation: 'word-reveal 0.8s ease forwards',
           opacity: 0,

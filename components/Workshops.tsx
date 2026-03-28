@@ -9,22 +9,48 @@ export default function Workshops() {
       style={{ position: 'relative', zIndex: 1, backgroundColor: '#0a0806' }}
     >
       <div className="workshops-split">
-        {/* Left — full image */}
+        {/* Left — full image with caption overlay */}
         <div className="img-hover-wrap relative overflow-hidden" style={{ minHeight: '600px' }}>
           <Image
-            src="/images/craft.jpg"
+            src="/images/workshop.jpg"
             alt="Hands crafting tiramisu at a workshop"
             fill
             className="object-cover"
             sizes="50vw"
+            onError={(e) => {
+              // Fallback to craft.jpg if workshop.jpg not available
+              (e.target as HTMLImageElement).src = '/images/craft.jpg';
+            }}
           />
+
+          {/* Caption overlay — glassmorphism bottom-left */}
           <div
             style={{
               position: 'absolute',
-              inset: 0,
-              background: 'linear-gradient(to right, transparent 70%, #0f0c08 100%)',
+              bottom: '28px',
+              left: '28px',
+              backgroundColor: 'rgba(10,8,6,0.62)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+              border: '1px solid rgba(201,169,110,0.14)',
+              borderRadius: '4px',
+              padding: '10px 16px',
+              zIndex: 2,
             }}
-          />
+          >
+            <p
+              className="font-sans"
+              style={{
+                fontSize: '0.6rem',
+                letterSpacing: '0.2em',
+                textTransform: 'uppercase',
+                color: 'rgba(245,237,224,0.65)',
+                margin: 0,
+              }}
+            >
+              Hands-on · Ashgrove, Brisbane
+            </p>
+          </div>
         </div>
 
         {/* Right — solid dark, text */}
